@@ -63,11 +63,14 @@ static void arm64_fpu_load_state(struct thread *t)
                      "ldp     q30, q31, [%0, #(15 * 32)]\n"
                      "msr     fpcr, %1\n"
                      "msr     fpsr, %2\n"
-                     :: "r"(fpstate), "r"(fpstate->fpcr), "r"(fpstate->fpsr));
+                     :: "r"(fpstate),
+                     "r"((uint64_t)fpstate->fpcr),
+                     "r"((uint64_t)fpstate->fpsr));
 }
 
 void arm64_fpu_save_state(struct thread *t)
 {
+    uint64_t fpcr, fpsr;
     struct fpstate *fpstate = &t->arch.fpstate;
     __asm__ volatile("stp     q0, q1, [%2, #(0 * 32)]\n"
                      "stp     q2, q3, [%2, #(1 * 32)]\n"
@@ -85,17 +88,20 @@ void arm64_fpu_save_state(struct thread *t)
                      "stp     q26, q27, [%2, #(13 * 32)]\n"
                      "stp     q28, q29, [%2, #(14 * 32)]\n"
                      "stp     q30, q31, [%2, #(15 * 32)]\n"
-                     "mrs     %0, fpcr\n"
-                     "mrs     %1, fpsr\n"
-                     : "=r"(fpstate->fpcr), "=r"(fpstate->fpsr)
+                     "mrs %0, fpcr\n"
+                     "mrs %1, fpsr\n"
+                     : "=r"(fpcr), "=r"(fpsr)
                      : "r"(fpstate));
+
+    fpstate->fpcr = fpcr;
+    fpstate->fpsr = fpsr;
 
     LTRACEF("thread %s, fpcr %x, fpsr %x\n", t->name, fpstate->fpcr, fpstate->fpsr);
 }
 
 void arm64_fpu_exception(struct arm64_iframe_long *iframe)
 {
-    uint32_t cpacr = ARM64_READ_SYSREG(cpacr_el1);
+    uint64_t cpacr = ARM64_READ_SYSREG(cpacr_el1);
     if (((cpacr >> 20) & 3) != 3) {
         cpacr |= 3 << 20;
         ARM64_WRITE_SYSREG(cpacr_el1, cpacr);

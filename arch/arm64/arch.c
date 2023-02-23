@@ -20,6 +20,7 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#include <compiler.h>
 #include <debug.h>
 #include <stdlib.h>
 #include <arch.h>
@@ -39,6 +40,7 @@
 /* smp boot lock */
 static spin_lock_t arm_boot_cpu_lock = 1;
 static volatile int secondaries_to_init = 0;
+__WEAK const uint8_t *linear_cpuid_map;
 #endif
 
 static void arm64_cpu_early_init(void)
@@ -91,7 +93,7 @@ void arch_idle(void)
     __asm__ volatile("wfi");
 }
 
-void arch_chain_load(void *entry, ulong arg0, ulong arg1, ulong arg2, ulong arg3)
+__WEAK void arch_chain_load(void *entry, ulong arg0, ulong arg1, ulong arg2, ulong arg3)
 {
     PANIC_UNIMPLEMENTED;
 }
@@ -112,7 +114,7 @@ void arch_enter_uspace(vaddr_t entry_point, vaddr_t user_stack_top)
      * all interrupts enabled
      * mode 0: EL0t
      */
-    uint32_t spsr = 0;
+    uint64_t spsr = 0;
 
     arch_disable_ints();
 

@@ -1,0 +1,53 @@
+/*
+ * Copyright (c) 2020 MediaTek Inc.
+ *
+ * Use of this source code is governed by a MIT-style
+ * license that can be found in the LICENSE file or at
+ * https://opensource.org/licenses/MIT
+ */
+
+#pragma once
+
+#include <platform/addressmap.h>
+
+/* Read/write byte limitation, by platform */
+#define PMIF_BYTECNT_MAX    2
+
+/* indicate which number SW channel start, by project */
+#define PMIF_SWINF_0_CHAN_NO    4
+/* MD: 0, security domain: 1, AP: 2 */
+#define PMIF_AP_SWINF_NO    2
+
+enum {
+    PMIF_SPI,
+    PMIF_SPMI,
+};
+
+struct mt6873_pmif_regs {
+    u32 init_done;       /* 0x000 */
+    u32 reserved0_0[8];
+    u32 inf_en;          /* 0x024 */
+    u32 reserved0_1[74];
+    u32 arb_en;          /* 0x150 */
+    u32 reserved0_2[152];
+    u32 cmdissue_en;     /* 0x3B4 */
+    u32 reserved0_3[562];
+    u32 swinf_acc;       /* 0xC80 */
+    u32 swinf_wdata;     /* 0xC84 */
+    u32 reserved1[3];
+    u32 swinf_rdata;     /* 0xC94 */
+    u32 reserved2[3];
+    u32 swinf_vld_clr;   /* 0xCA4 */
+    u32 swinf_sta;       /* 0xCA8 */
+};
+
+static struct mt6873_pmif_regs * const mtk_pmif = (void *)PMIF_SPMI_BASE;
+
+STATIC_ASSERT(__offsetof(struct mt6873_pmif_regs, inf_en) == 0x24);
+STATIC_ASSERT(__offsetof(struct mt6873_pmif_regs, arb_en) == 0x150);
+STATIC_ASSERT(__offsetof(struct mt6873_pmif_regs, cmdissue_en) == 0x3B4);
+STATIC_ASSERT(__offsetof(struct mt6873_pmif_regs, swinf_acc) == 0xC80);
+STATIC_ASSERT(__offsetof(struct mt6873_pmif_regs, swinf_wdata) == 0xC84);
+STATIC_ASSERT(__offsetof(struct mt6873_pmif_regs, swinf_rdata) == 0xC94);
+STATIC_ASSERT(__offsetof(struct mt6873_pmif_regs, swinf_vld_clr) == 0xCA4);
+STATIC_ASSERT(__offsetof(struct mt6873_pmif_regs, swinf_sta) == 0xCA8);

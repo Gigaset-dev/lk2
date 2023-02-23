@@ -53,10 +53,10 @@ status_t dpc_queue(dpc_callback cb, void *arg, uint flags)
 
     dpc->cb = cb;
     dpc->arg = arg;
-    enter_critical_section();
+    THREAD_LOCK(state);
     list_add_tail(&dpc_list, &dpc->node);
     event_signal(&dpc_event, (flags & DPC_FLAG_NORESCHED) ? false : true);
-    exit_critical_section();
+    THREAD_UNLOCK(state);
 
     return NO_ERROR;
 }
@@ -66,11 +66,11 @@ static int dpc_thread_routine(void *arg)
     for (;;) {
         event_wait(&dpc_event);
 
-        enter_critical_section();
+        THREAD_LOCK(state);
         struct dpc *dpc = list_remove_head_type(&dpc_list, struct dpc, node);
         if (!dpc)
             event_unsignal(&dpc_event);
-        exit_critical_section();
+        THREAD_UNLOCK(state);
 
         if (dpc) {
 //          dprintf("dpc calling %p, arg %p\n", dpc->cb, dpc->arg);

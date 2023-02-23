@@ -25,7 +25,7 @@ MODULE_SRCS += \
 	$(LOCAL_DIR)/arm/dcc.S
 
 GLOBAL_DEFINES += \
-	ARCH_DEFAULT_STACK_SIZE=4096
+	ARCH_DEFAULT_STACK_SIZE=8192
 
 # if its requested we build with SMP, arm generically supports 4 cpus
 ifeq ($(WITH_SMP),1)
@@ -47,6 +47,10 @@ GLOBAL_DEFINES += \
 endif
 
 ARCH_OPTFLAGS := -O2
+
+# default on to enhance efficiency, also avoid weird linker issue
+# ex: lib/libc/eabi.c:58: undefined reference to `__cxa_atexit'
+WITH_LINKER_GC ?= 1
 
 # we have a mmu and want the vmm/pmm
 WITH_KERNEL_VM ?= 1
@@ -94,7 +98,11 @@ ARCH_COMPILEFLAGS += $(ARCH_$(ARCH)_COMPILEFLAGS)
 
 ARCH_LDFLAGS += -z max-page-size=4096
 
+ifeq ($(CLANG_BINDIR),)
 LIBGCC := $(shell $(TOOLCHAIN_PREFIX)gcc $(GLOBAL_COMPILEFLAGS) $(ARCH_COMPILEFLAGS) -print-libgcc-file-name)
+else
+LIBGCC := $(CLANG_BINDIR)/../runtimes_ndk_cxx/libclang_rt.builtins-aarch64-android.a
+endif
 
 # make sure some bits were set up
 MEMVARS_SET := 0

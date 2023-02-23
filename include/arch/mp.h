@@ -29,3 +29,6 @@
 status_t arch_mp_send_ipi(mp_cpu_mask_t target, mp_ipi_t ipi);
 
 void arch_mp_init_percpu(void);
+
+enum handler_return arm_ipi_generic_handler(void *arg);
+enum handler_return arm_ipi_reschedule_handler(void *arg);

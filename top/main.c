@@ -42,8 +42,8 @@
 /* saved boot arguments from whoever loaded the system */
 ulong lk_boot_args[4];
 
-extern void *__ctor_list;
-extern void *__ctor_end;
+extern void (*__ctor_list[])(void);
+extern void (*__ctor_end[])(void);
 extern int __bss_start;
 extern int _end;
 
@@ -58,17 +58,10 @@ extern void kernel_init(void);
 
 static void call_constructors(void)
 {
-    void **ctor;
+    void (**ctor)(void);
 
-    ctor = &__ctor_list;
-    while (ctor != &__ctor_end) {
-        void (*func)(void);
-
-        func = (void ( *)(void))*ctor;
-
-        func();
-        ctor++;
-    }
+    for (ctor = __ctor_list; ctor != __ctor_end; ctor++)
+        (*ctor)();
 }
 
 /* called from arch code */
@@ -99,6 +92,9 @@ void lk_main(ulong arg0, ulong arg1, ulong arg2, ulong arg3)
     dprintf(INFO, "\nwelcome to lk/MP\n\n");
 #else
     dprintf(INFO, "\nwelcome to lk\n\n");
+#endif
+#ifdef LK_AS
+    dprintf(INFO, "lk variant: %s\n", LK_AS);
 #endif
     dprintf(INFO, "boot args 0x%lx 0x%lx 0x%lx 0x%lx\n",
             lk_boot_args[0], lk_boot_args[1], lk_boot_args[2], lk_boot_args[3]);

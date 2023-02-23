@@ -23,6 +23,8 @@
 #include <asm.h>
 #include <arch/asm_macros.h>
 
+tmp .req x9
+
 /* void arm64_context_switch(vaddr_t *old_sp, vaddr_t new_sp); */
 FUNCTION(arm64_context_switch)
     /* save old frame */
@@ -68,9 +70,13 @@ FUNCTION(arm64_el3_to_el1)
     mov x0, #(1<<31)
     msr hcr_el2, x0
 
-    /* disable EL2 coprocessor traps */
+    /* disable EL2/EL3 coprocessor traps */
     mov x0, #0x33ff
     msr cptr_el2, x0
+    mrs x0, cptr_el3
+    mov x1, #(0x1<<10)
+    bic x0, x0, x1
+    msr cptr_el3, x0
 
     /* disable EL1 FPU traps */
     mov x0, #(0b11<<20)
@@ -124,25 +130,46 @@ FUNCTION(arm64_elX_to_el1)
 
 
 .confEL1:
-    /* disable EL2 coprocessor traps */
-    mov x0, #0x33ff
-    msr cptr_el2, x0
+    /* disable EL2/EL3 coprocessor traps */
+    mov tmp, #0x33ff
+    msr cptr_el2, tmp
+    mrs tmp, cptr_el3
+    bic tmp, tmp, #(0x1<<10)
+    msr cptr_el3, tmp
 
     /* set EL1 to 64bit */
-    mov x0, #(1<<31)
-    msr hcr_el2, x0
+    mov tmp, #(1<<31)
+    msr hcr_el2, tmp
 
     /* disable EL1 FPU traps */
-    mov x0, #(0b11<<20)
-    msr cpacr_el1, x0
+    mov tmp, #(0b11<<20)
+    msr cpacr_el1, tmp
 
     /* set up the EL1 bounce interrupt */
-    mov x0, sp
-    msr sp_el1, x0
+    mov tmp, sp
+    msr sp_el1, tmp
+
+    push x0, x1
+    push x2, x3
+    push x29, x30
+
+    bl platform_elX_to_el1
+
+    pop  x29, x30
+    pop  x2, x3
+    pop  x0, x1
 
     isb
     eret
 
 
 .Ltarget:
+    ret
+
+.weak arm64_elX_init
+FUNCTION(arm64_elX_init)
+    ret
+
+.weak platform_elX_to_el1
+FUNCTION(platform_elX_to_el1)
     ret

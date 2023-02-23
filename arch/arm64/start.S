@@ -1,6 +1,7 @@
 #include <asm.h>
 #include <arch/arm64/mmu.h>
 #include <arch/asm_macros.h>
+#include <arch/arch_ops.h>
 #include <kernel/vm.h>
 
 /*
@@ -32,6 +33,7 @@ attr                    .req x27
 FUNCTION(_start)
 .globl arm_reset
 arm_reset:
+    bl      arm64_elX_init
     bl      arm64_elX_to_el1
 
 #if WITH_KERNEL_VM
@@ -42,6 +44,7 @@ arm_reset:
     orr     tmp, tmp, #(1<<3)  /* Enable Stack Alignment Check EL1 */
     orr     tmp, tmp, #(1<<4)  /* Enable Stack Alignment Check EL0 */
     bic     tmp, tmp, #(1<<1)  /* Disable Alignment Checking for EL1 EL0 */
+    bic     tmp, tmp, #(1<<19) /* Disable WXN to prevent MMU enable exception */
     msr     sctlr_el1, tmp
 
     /* set up the mmu according to mmu_initial_mappings */
@@ -121,9 +124,13 @@ arm_reset:
     ldr     attr, =MMU_PTE_KERNEL_DATA_FLAGS
     ldr     tmp, =__code_start
     subs    size, tmp, vaddr
-    /* If page is below  the entry point (_start) mark as kernel data */
-    b.hi    .Lmem_type_done
+    b.ls    .Lmem_kernel_ro
+    cmp     size, mapping_size
+    b.ls    .Lmem_type_done
+    mov     size, mapping_size
+    b       .Lmem_type_done
 
+.Lmem_kernel_ro:
     ldr     attr, =MMU_PTE_KERNEL_RO_FLAGS
     ldr     tmp, =__rodata_start
     subs    size, tmp, vaddr
@@ -328,6 +335,10 @@ arm_reset:
     msr     tcr_el1, tmp
     isb
 
+    /* Enable WXN soon after ttbr0 trampoline switch */
+    mrs     tmp, sctlr_el1
+    orr     tmp, tmp, #(1<<19)
+    msr     sctlr_el1, tmp
 
     /* Invalidate TLB */
     tlbi    vmalle1
@@ -366,7 +377,15 @@ arm_reset:
     bge     .Lunsupported_cpu_trap
     bic     cpuid, cpuid, #0xff
     orr     cpuid, tmp, cpuid, LSR #(8 - SMP_CPU_CLUSTER_SHIFT)
+    adrp    tmp, linear_cpuid_map
+    add     tmp, tmp, #:lo12:linear_cpuid_map
+    ldr     tmp, [tmp]
+    cbz     tmp, .Lno_cpuid_remap
+    add     tmp, tmp, cpuid
+    ldrb    wtmp2, [tmp]
+    ubfx    cpuid, tmp2, #0, #31
 
+.Lno_cpuid_remap:
     cmp     cpuid, #SMP_MAX_CPUS
     bge     .Lunsupported_cpu_trap
 

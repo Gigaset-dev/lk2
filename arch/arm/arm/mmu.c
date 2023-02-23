@@ -51,7 +51,7 @@ static void arm_mmu_unmap_section(arch_aspace_t *aspace, addr_t vaddr);
 uint32_t arm_kernel_translation_table[TT_ENTRY_COUNT] __ALIGNED(16384) __SECTION(".bss.prebss.translation_table");
 
 /* convert user level mmu flags to flags that go in L1 descriptors */
-static uint32_t mmu_flags_to_l1_arch_flags(uint flags)
+uint32_t mmu_flags_to_l1_arch_flags(uint flags)
 {
     uint32_t arch_flags = 0;
     switch (flags & ARCH_MMU_FLAG_CACHE_MASK) {

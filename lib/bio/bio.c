@@ -49,7 +49,12 @@ static ssize_t bio_default_read(struct bdev *dev, void *_buf, off_t offset, size
     ssize_t bytes_read = 0;
     bnum_t block;
     ssize_t err = 0;
-    STACKBUF_DMA_ALIGN(temp, dev->block_size); // temporary buffer for partial block transfers
+    uint8_t *temp;
+
+    // temporary buffer for partial block transfers
+    temp = memalign(CACHE_LINE, dev->block_size);
+    if (temp == NULL)
+        return ERR_NO_MEMORY;
 
     /* find the starting block */
     block = offset / dev->block_size;
@@ -136,6 +141,8 @@ static ssize_t bio_default_read(struct bdev *dev, void *_buf, off_t offset, size
     }
 
 err:
+    free(temp);
+
     /* return error or bytes read */
     return (err >= 0) ? bytes_read : err;
 }
@@ -146,7 +153,12 @@ static ssize_t bio_default_write(struct bdev *dev, const void *_buf, off_t offse
     ssize_t bytes_written = 0;
     bnum_t block;
     ssize_t err = 0;
-    STACKBUF_DMA_ALIGN(temp, dev->block_size); // temporary buffer for partial block transfers
+    uint8_t *temp;
+
+    // temporary buffer for partial block transfers
+    temp = memalign(CACHE_LINE, dev->block_size);
+    if (temp == NULL)
+        return ERR_NO_MEMORY;
 
     /* find the starting block */
     block = offset / dev->block_size;
@@ -255,6 +267,8 @@ static ssize_t bio_default_write(struct bdev *dev, const void *_buf, off_t offse
     }
 
 err:
+    free(temp);
+
     /* return error or bytes written */
     return (err >= 0) ? bytes_written : err;
 }
@@ -262,7 +276,11 @@ err:
 static ssize_t bio_default_erase(struct bdev *dev, off_t offset, size_t len)
 {
     /* default erase operation is to just write zeros over the device */
-    STACKBUF_DMA_ALIGN(erase_buf, dev->block_size);
+    uint8_t *erase_buf;
+
+    erase_buf = memalign(CACHE_LINE, dev->block_size);
+    if (erase_buf == NULL)
+        return ERR_NO_MEMORY;
 
     memset(erase_buf, dev->erase_byte, dev->block_size);
 
@@ -273,8 +291,10 @@ static ssize_t bio_default_erase(struct bdev *dev, off_t offset, size_t len)
         size_t towrite = MIN(remaining, dev->block_size);
 
         ssize_t written = bio_write(dev, erase_buf, pos, towrite);
-        if (written < 0)
+        if (written < 0) {
+            free(erase_buf);
             return written;
+        }
 
         erased += written;
         pos += written;
@@ -284,6 +304,7 @@ static ssize_t bio_default_erase(struct bdev *dev, off_t offset, size_t len)
             break;
     }
 
+    free(erase_buf);
     return erased;
 }
 
@@ -377,6 +398,27 @@ void bio_close(bdev_t *dev)
     DEBUG_ASSERT(dev);
     LTRACEF(" '%s'\n", dev->name);
     bdev_dec_ref(dev);
+}
+
+bdev_t *bio_open_by_label(const char *label)
+{
+    bdev_t *bdev = NULL;
+
+    /* see if it's in our list */
+    bdev_t *entry;
+
+    mutex_acquire(&bdevs.lock);
+    list_for_every_entry(&bdevs.list, entry, bdev_t, node) {
+        DEBUG_ASSERT(entry->ref > 0);
+        if (entry->label && !strcmp(entry->label, label)) {
+            bdev = entry;
+            bdev_inc_ref(bdev);
+            break;
+        }
+    }
+    mutex_release(&bdevs.lock);
+
+    return bdev;
 }
 
 ssize_t bio_read(bdev_t *dev, void *buf, off_t offset, size_t len)
@@ -488,6 +530,8 @@ void bio_initialize_bdev(bdev_t *dev,
     dev->geometry = geometry;
     dev->erase_byte = 0;
     dev->ref = 0;
+    dev->label = NULL;
+    dev->is_gpt = false;
     dev->flags = flags;
 
 #if DEBUG
@@ -574,8 +618,8 @@ void bio_dump_devices(void)
     mutex_acquire(&bdevs.lock);
     list_for_every_entry(&bdevs.list, entry, bdev_t, node) {
 
-        printf("\t%s, size %lld, bsize %zd, ref %d",
-               entry->name, entry->total_size, entry->block_size, entry->ref);
+        printf("\t%s, size %lld, bsize %zd, ref %d, label %s",
+               entry->name, entry->total_size, entry->block_size, entry->ref, entry->label);
 
         if (!entry->geometry_count || !entry->geometry) {
             printf(" (no erase geometry)\n");

@@ -59,11 +59,15 @@ void vmm_init(void)
 
 static inline bool is_inside_aspace(const vmm_aspace_t *aspace, vaddr_t vaddr)
 {
+    DEBUG_ASSERT(aspace);
+
     return (vaddr >= aspace->base && vaddr <= aspace->base + aspace->size - 1);
 }
 
 static bool is_region_inside_aspace(const vmm_aspace_t *aspace, vaddr_t vaddr, size_t size)
 {
+    DEBUG_ASSERT(aspace);
+
     /* is the starting address within the address space*/
     if (!is_inside_aspace(aspace, vaddr))
         return false;
@@ -84,6 +88,7 @@ static bool is_region_inside_aspace(const vmm_aspace_t *aspace, vaddr_t vaddr, s
 
 static size_t trim_to_aspace(const vmm_aspace_t *aspace, vaddr_t vaddr, size_t size)
 {
+    DEBUG_ASSERT(aspace);
     DEBUG_ASSERT(is_inside_aspace(aspace, vaddr));
 
     if (size == 0)
@@ -195,6 +200,7 @@ static inline bool check_gap(vmm_aspace_t *aspace,
     vaddr_t gap_beg; /* first byte of a gap */
     vaddr_t gap_end; /* last byte of a gap */
 
+    DEBUG_ASSERT(aspace);
     DEBUG_ASSERT(pva);
 
     if (prev)
@@ -396,9 +402,13 @@ status_t vmm_alloc_physical(vmm_aspace_t *aspace, const char *name, size_t size,
     if (ptr)
         *ptr = (void *)r->base;
 
-    /* map all of the pages */
-    int err = arch_mmu_map(&aspace->arch_aspace, r->base, paddr, size / PAGE_SIZE, arch_mmu_flags);
-    LTRACEF("arch_mmu_map returns %d\n", err);
+    if (!(vmm_flags & VMM_FLAG_NO_MAP_PA)) {
+        /* map all of the pages */
+        int err = arch_mmu_map(&aspace->arch_aspace, r->base,
+                            paddr, size / PAGE_SIZE, arch_mmu_flags);
+
+        LTRACEF("arch_mmu_map returns %d\n", err);
+    }
 
     ret = NO_ERROR;
 
@@ -589,6 +599,8 @@ static vmm_region_t *vmm_find_region(const vmm_aspace_t *aspace, vaddr_t vaddr)
 
 status_t vmm_free_region(vmm_aspace_t *aspace, vaddr_t vaddr)
 {
+    DEBUG_ASSERT(aspace);
+
     mutex_acquire(&vmm_lock);
 
     vmm_region_t *r = vmm_find_region (aspace, vaddr);
@@ -616,6 +628,8 @@ status_t vmm_free_region(vmm_aspace_t *aspace, vaddr_t vaddr)
 
 status_t vmm_create_aspace(vmm_aspace_t **_aspace, const char *name, uint flags)
 {
+    DEBUG_ASSERT(_aspace);
+
     status_t err;
 
     vmm_aspace_t *aspace = calloc(1, sizeof(vmm_aspace_t));
@@ -659,6 +673,8 @@ status_t vmm_create_aspace(vmm_aspace_t **_aspace, const char *name, uint flags)
 
 status_t vmm_free_aspace(vmm_aspace_t *aspace)
 {
+    DEBUG_ASSERT(aspace);
+
     /* pop it out of the global aspace list */
     mutex_acquire(&vmm_lock);
     if (!list_in_list(&aspace->node)) {
@@ -734,12 +750,16 @@ void vmm_set_active_aspace(vmm_aspace_t *aspace)
 
 static void dump_region(const vmm_region_t *r)
 {
+    DEBUG_ASSERT(r);
+
     printf("\tregion %p: name '%s' range 0x%lx - 0x%lx size 0x%zx flags 0x%x mmu_flags 0x%x\n",
            r, r->name, r->base, r->base + r->size - 1, r->size, r->flags, r->arch_mmu_flags);
 }
 
 static void dump_aspace(const vmm_aspace_t *a)
 {
+    DEBUG_ASSERT(a);
+
     printf("aspace %p: name '%s' range 0x%lx - 0x%lx size 0x%zx flags 0x%x\n",
            a, a->name, a->base, a->base + a->size - 1, a->size, a->flags);
 

@@ -245,10 +245,17 @@ static inline uint32_t arch_cycle_count(void)
 }
 
 #if WITH_SMP && ARM_ISA_ARMV7
+extern const uint8_t *linear_cpuid_map;
+
 static inline uint arch_curr_cpu_num(void)
 {
     uint32_t mpidr = arm_read_mpidr();
-    return ((mpidr & ((1U << SMP_CPU_ID_BITS) - 1)) >> 8 << SMP_CPU_CLUSTER_SHIFT) | (mpidr & 0xff);
+    uint32_t smp_cpu_id_bits;
+
+    smp_cpu_id_bits = mpidr & ((1U << SMP_CPU_ID_BITS) - 1);
+    mpidr = (smp_cpu_id_bits >> 8 << SMP_CPU_CLUSTER_SHIFT) | (mpidr & 0xff);
+
+    return linear_cpuid_map ? *(linear_cpuid_map + mpidr) : mpidr;
 }
 #else
 static inline uint arch_curr_cpu_num(void)

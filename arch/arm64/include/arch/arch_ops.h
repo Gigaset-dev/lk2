@@ -33,6 +33,28 @@
 #define ENABLE_CYCLE_COUNTER 1
 
 // override of some routines
+static inline void arch_enable_serror(void)
+{
+    CF;
+    __asm__ volatile("msr daifclr, #4" ::: "memory");
+}
+
+static inline void arch_disable_serror(void)
+{
+    __asm__ volatile("msr daifset, #4" ::: "memory");
+    CF;
+}
+
+static inline bool arch_serror_disabled(void)
+{
+    unsigned long state;
+
+    __asm__ volatile("mrs %0, daif" : "=r"(state));
+    state &= (1<<8);
+
+    return !!state;
+}
+
 static inline void arch_enable_ints(void)
 {
     CF;
@@ -47,7 +69,7 @@ static inline void arch_disable_ints(void)
 
 static inline bool arch_ints_disabled(void)
 {
-    unsigned int state;
+    unsigned long state;
 
     __asm__ volatile("mrs %0, daif" : "=r"(state));
     state &= (1<<7);
@@ -70,7 +92,7 @@ static inline void arch_disable_fiqs(void)
 // XXX
 static inline bool arch_fiqs_disabled(void)
 {
-    unsigned int state;
+    unsigned long state;
 
     __asm__ volatile("mrs %0, daif" : "=r"(state));
     state &= (1<<6);
@@ -251,10 +273,17 @@ static inline void set_current_thread(struct thread *t)
 }
 
 #if WITH_SMP
+extern const uint8_t *linear_cpuid_map;
+
 static inline uint arch_curr_cpu_num(void)
 {
     uint64_t mpidr =  ARM64_READ_SYSREG(mpidr_el1);
-    return ((mpidr & ((1U << SMP_CPU_ID_BITS) - 1)) >> 8 << SMP_CPU_CLUSTER_SHIFT) | (mpidr & 0xff);
+    uint64_t smp_cpu_id_bits;
+
+    smp_cpu_id_bits = mpidr & ((1U << SMP_CPU_ID_BITS) - 1);
+    mpidr = (smp_cpu_id_bits >> 8 << SMP_CPU_CLUSTER_SHIFT) | (mpidr & 0xff);
+
+    return linear_cpuid_map ? *(linear_cpuid_map + mpidr) : mpidr;
 }
 #else
 static inline uint arch_curr_cpu_num(void)

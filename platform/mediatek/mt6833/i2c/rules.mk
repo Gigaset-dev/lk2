@@ -1,0 +1,13 @@
+LOCAL_DIR := $(GET_LOCAL_DIR)
+
+MODULE := $(LOCAL_DIR)
+
+MODULE_SRCS += \
+	$(LOCAL_DIR)/platform_i2c.c
+
+SRC_CLK_FRQ ?= 124800000
+
+MODULE_DEFINES += \
+	SRC_CLK_FRQ=$(SRC_CLK_FRQ)
+
+include make/module.mk

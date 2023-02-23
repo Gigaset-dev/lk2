@@ -108,5 +108,25 @@ endif
 ifeq ($(ARM_CPU),armemu)
 ARCH_arm_COMPILEFLAGS += -march=armv7-a
 endif
+ifeq ($(ARM_CPU),armv8-a)
+ARCH_arm_COMPILEFLAGS += -march=$(ARM_CPU)
+ifneq ($(ARM_WITHOUT_VFP_NEON),true)
+ARCH_arm_COMPILEFLAGS += -mfpu=vfpv3 -mfloat-abi=softfp
+else
+ARCH_arm_COMPILEFLAGS += -mfloat-abi=soft
+endif
+endif
+
+ifneq ($(CLANG_BINDIR),)
+
+CLANG_ARM_TARGET_SYS ?= linux
+CLANG_ARM_TARGET_ABI ?= gnu
+
+CLANG_ARM_AS_DIR := $(shell dirname $(shell dirname $(shell which $(ARCH_arm_TOOLCHAIN_PREFIX)as)))
+
+ARCH_arm_COMPILEFLAGS += -target arm-$(CLANG_ARM_TARGET_SYS)-$(CLANG_ARM_TARGET_ABI) \
+                        --gcc-toolchain=$(CLANG_ARM_AS_DIR)
+
+endif
 
 endif

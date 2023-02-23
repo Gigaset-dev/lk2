@@ -20,7 +20,10 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#include <assert.h>
+#include <stdlib.h>
 #include <debug.h>
+#include <err.h>
 #include <stdio.h>
 #include <string.h>
 #include <compiler.h>
@@ -28,6 +31,8 @@
 #include <arch.h>
 #include <lib/bio.h>
 #include <lib/partition.h>
+
+#include "gpt.h"
 
 struct chs {
     uint8_t c;
@@ -43,6 +48,13 @@ struct mbr_part {
     uint32_t lba_start;
     uint32_t lba_length;
 } __PACKED;
+
+struct gpt_header {
+    uint64_t first_usable_lba;
+    uint32_t partition_entry_size;
+    uint32_t header_size;
+    uint32_t max_partition_count;
+};
 
 static status_t validate_mbr_partition(bdev_t *dev, const struct mbr_part *part)
 {
@@ -64,6 +76,29 @@ static status_t validate_mbr_partition(bdev_t *dev, const struct mbr_part *part)
     return 0;
 }
 
+/*
+ * Parse the gpt header and get the required header fields
+ * Return 0 on valid signature
+ */
+static unsigned int
+partition_parse_gpt_header(unsigned char *buffer, struct gpt_header *header)
+{
+    /* Check GPT Signature */
+    if (((uint32_t *) buffer)[0] != GPT_SIGNATURE_2 ||
+        ((uint32_t *) buffer)[1] != GPT_SIGNATURE_1)
+        return 1;
+
+    header->header_size = GET_LWORD_FROM_BYTE(&buffer[HEADER_SIZE_OFFSET]);
+    header->first_usable_lba =
+        GET_LLWORD_FROM_BYTE(&buffer[FIRST_USABLE_LBA_OFFSET]);
+    header->max_partition_count =
+        GET_LWORD_FROM_BYTE(&buffer[PARTITION_COUNT_OFFSET]);
+    header->partition_entry_size =
+        GET_LWORD_FROM_BYTE(&buffer[PENTRY_SIZE_OFFSET]);
+
+    return 0;
+}
+
 int partition_publish(const char *device, off_t offset)
 {
     int err = 0;
@@ -79,11 +114,15 @@ int partition_publish(const char *device, off_t offset)
     }
 
     // get a dma aligned and padded block to read info
-    STACKBUF_DMA_ALIGN(buf, dev->block_size);
+    uint8_t *buf = memalign(CACHE_LINE, dev->block_size);
+
+    if (buf == NULL)
+        return ERR_NO_MEMORY;
 
     /* sniff for MBR partition types */
     do {
-        int i;
+        unsigned int i, j, n;
+        int gpt_partitions_exist = 0;
 
         err = bio_read(dev, buf, offset, 512);
         if (err < 0)
@@ -110,6 +149,12 @@ int partition_publish(const char *device, off_t offset)
                 // publish it
                 char subdevice[128];
 
+                /* Type 0xEE indicates end of MBR and GPT partitions exist */
+                if (part[i].type == 0xee) {
+                    gpt_partitions_exist = 1;
+                    break;
+                }
+
                 sprintf(subdevice, "%sp%d", device, i);
 
                 err = bio_publish_subdevice(device, subdevice, part[i].lba_start, part[i].lba_length);
@@ -120,23 +165,123 @@ int partition_publish(const char *device, off_t offset)
                 count++;
             }
         }
+
+        if (!gpt_partitions_exist)
+            break;
+        dprintf(INFO, "found GPT\n");
+
+        err = bio_read(dev, buf, offset + dev->block_size, dev->block_size);
+        if (err < 0)
+            goto err;
+
+        struct gpt_header gpthdr;
+
+        err = partition_parse_gpt_header(buf, &gpthdr);
+        if (err) {
+            /* Check the backup gpt */
+
+            uint64_t backup_header_lba = dev->block_count - 1;
+
+            err = bio_read(dev, buf, (backup_header_lba * dev->block_size), dev->block_size);
+            if (err < 0) {
+                dprintf(CRITICAL, "GPT: Could not read backup gpt from mmc\n");
+                break;
+            }
+
+            err = partition_parse_gpt_header(buf, &gpthdr);
+            if (err) {
+                dprintf(CRITICAL, "GPT: Primary and backup signatures invalid\n");
+                break;
+            }
+        }
+
+        uint32_t part_entry_cnt = dev->block_size / ENTRY_SIZE;
+        uint64_t partition_0 = GET_LLWORD_FROM_BYTE(&buf[PARTITION_ENTRIES_OFFSET]);
+        /* Read GPT Entries */
+        for (i = 0; i < (ROUNDUP(gpthdr.max_partition_count, part_entry_cnt)) / part_entry_cnt; i++) {
+            err = bio_read(dev, buf, offset + (partition_0 * dev->block_size) + (i * dev->block_size),
+                           dev->block_size);
+
+            if (err < 0) {
+                dprintf(CRITICAL,
+                    "GPT: mmc read card failed reading partition entries.\n");
+                break;
+            }
+
+            for (j = 0; j < part_entry_cnt; j++) {
+                unsigned char type_guid[PARTITION_TYPE_GUID_SIZE];
+                unsigned char name[MAX_GPT_NAME_SIZE];
+                unsigned char UTF16_name[MAX_GPT_NAME_SIZE];
+                uint64_t first_lba, last_lba, size;
+
+                // guid
+                memcpy(&type_guid, &buf[(j * gpthdr.partition_entry_size)],
+                       PARTITION_TYPE_GUID_SIZE);
+                if (type_guid[0] == 0 && type_guid[1] == 0) {
+                    i = ROUNDUP(gpthdr.max_partition_count, part_entry_cnt);
+                    break;
+                }
+
+                // size
+                first_lba = GET_LLWORD_FROM_BYTE(&buf[(j * gpthdr.partition_entry_size) + FIRST_LBA_OFFSET]);
+                last_lba = GET_LLWORD_FROM_BYTE(&buf[(j * gpthdr.partition_entry_size) + LAST_LBA_OFFSET]);
+                size = last_lba - first_lba + 1;
+
+                // name
+                memset(&UTF16_name, 0x00, MAX_GPT_NAME_SIZE);
+                memcpy(UTF16_name, &buf[(j * gpthdr.partition_entry_size) +
+                       PARTITION_NAME_OFFSET], MAX_GPT_NAME_SIZE);
+
+                /*
+                 * Currently partition names in *.xml are UTF-8 and lowercase
+                 * Only supporting english for now so removing 2nd byte of UTF-16
+                 */
+                for (n = 0; n < MAX_GPT_NAME_SIZE / 2; n++)
+                    name[n] = UTF16_name[n * 2];
+
+                //dprintf(CRITICAL, "got part '%s' size=%llu!\n", name, size);
+                char subdevice[128];
+
+                sprintf(subdevice, "%sp%d", device, count+1);
+
+                err = bio_publish_subdevice(device, subdevice, first_lba, size);
+                if (err < 0) {
+                    dprintf(INFO, "error publishing subdevice '%s'\n", name);
+                    continue;
+                }
+
+                bdev_t *partdev = bio_open(subdevice);
+
+                partdev->label = strdup((char *)name);
+                partdev->is_gpt = true;
+
+                count++;
+            }
+        }
     } while (0);
 
     bio_close(dev);
 
 err:
+    free(buf);
     return (err < 0) ? err : count;
 }
 
 int partition_unpublish(const char *device)
 {
-    int i;
+    int i, entry_max;
     int count;
     bdev_t *dev;
     char devname[512];
 
     count = 0;
-    for (i=0; i < 16; i++) {
+    dev = bio_open(device);
+    if (!dev)
+        return 0;
+    else
+        entry_max = 192;
+
+    for (i = 0; i < entry_max; i++) {
         sprintf(devname, "%sp%d", device, i);
 
         dev = bio_open(devname);

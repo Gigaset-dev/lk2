@@ -58,7 +58,7 @@
 
 #define READ_TIMER_REG32(reg) ARM64_READ_SYSREG(reg)
 #define READ_TIMER_REG64(reg) ARM64_READ_SYSREG(reg)
-#define WRITE_TIMER_REG32(reg, val) ARM64_WRITE_SYSREG(reg, val)
+#define WRITE_TIMER_REG32(reg, val) ARM64_WRITE_SYSREG(reg, (uint64_t)val)
 #define WRITE_TIMER_REG64(reg, val) ARM64_WRITE_SYSREG(reg, val)
 
 #else
@@ -269,7 +269,7 @@ static void test_cntpct_to_lk_time(uint32_t cntfrq, lk_time_t expected_lk_time, 
     if ((uint64_t)cntfrq * wrap_count > UINT_MAX)
         cntpct += (((uint64_t)cntfrq << 32) / 1000) * wrap_count;
     else
-        cntpct += (((uint64_t)(cntfrq * wrap_count) << 32) / 1000);
+        cntpct += ((((uint64_t)cntfrq * wrap_count) << 32) / 1000);
     lk_time = cntpct_to_lk_time(cntpct);
 
     test_time_conversion_check_result(lk_time, expected_lk_time, (1000 + cntfrq - 1) / cntfrq, true);

@@ -1,0 +1,8 @@
+LOCAL_DIR := $(GET_LOCAL_DIR)
+
+MODULE := $(LOCAL_DIR)
+
+PLATFORM := mediatek
+SUB_PLATFORM := mt6879
+
+GLOBAL_INCLUDES += $(LOCAL_DIR)/include

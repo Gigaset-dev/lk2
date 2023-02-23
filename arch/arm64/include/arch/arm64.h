@@ -68,13 +68,15 @@ struct arm64_iframe_short {
 
 struct thread;
 extern void arm64_exception_base(void);
+extern void arm64_el2_or_el3_exception_base(void);
 void arm64_el3_to_el1(void);
 void arm64_fpu_exception(struct arm64_iframe_long *iframe);
 void arm64_fpu_save_state(struct thread *thread);
+void arm64_chain_load(paddr_t entry, ulong arg0, ulong arg1, ulong arg2, ulong arg3) __NO_RETURN;
 
 static inline void arm64_fpu_pre_context_switch(struct thread *thread)
 {
-    uint32_t cpacr = ARM64_READ_SYSREG(cpacr_el1);
+    uint64_t cpacr = ARM64_READ_SYSREG(cpacr_el1);
     if ((cpacr >> 20) & 3) {
         arm64_fpu_save_state(thread);
         cpacr &= ~(3 << 20);

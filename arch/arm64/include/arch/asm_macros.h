@@ -72,11 +72,9 @@ ldp \ra, \rb, [sp], #16
     add     \new_ptr_end, \new_ptr, #(1 << \size_shift)
     str     \new_ptr_end, [\tmp, #:lo12:boot_alloc_end]
 
-.if \phys_offset != 0
-    /* clear page */
+    /* translate address */
     sub     \new_ptr, \new_ptr, \phys_offset
     sub     \new_ptr_end, \new_ptr_end, \phys_offset
-.endif
 
     /* clear page */
     mov     \tmp, \new_ptr

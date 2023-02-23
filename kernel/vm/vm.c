@@ -26,6 +26,7 @@
 #include <trace.h>
 #include <err.h>
 #include <string.h>
+#include <stdlib.h>
 #include <lk/init.h>
 #include <lib/console.h>
 #include <arch/mmu.h>
@@ -33,6 +34,8 @@
 #include <debug.h>
 
 #define LOCAL_TRACE 0
+
+#define SZ_1M 0x00100000
 
 extern int _start;
 extern int _end;
@@ -97,7 +100,13 @@ static void vm_init_postheap(uint level)
     struct mmu_initial_mapping *map = mmu_initial_mappings;
     while (map->size > 0) {
         if (!(map->flags & MMU_INITIAL_MAPPING_TEMPORARY)) {
-            vmm_reserve_space(vmm_get_kernel_aspace(), map->name, map->size, map->virt);
+            /*
+             * Round vmm space to 1MB, sync with aarch32 start.S doing with mmu_initial_mappings.
+             * It can avoid running into arch_mmu_map PANIC_UNIMPLEMENTED due to expand 2nd level
+             * page table when later user allocates nearby VA to this one.
+             */
+            vmm_reserve_space(vmm_get_kernel_aspace(), map->name,
+                            ROUNDUP(map->size, SZ_1M), ROUNDDOWN(map->virt, SZ_1M));
         }
 
         map++;

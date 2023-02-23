@@ -5,6 +5,10 @@ MODULE := $(LOCAL_DIR)
 MODULE_SRCS += \
 	$(LOCAL_DIR)/version.c
 
+ifeq ($(strip $(BUILDID)),)
+BUILDID := "$(shell $(LOCAL_DIR)/buildid_mtk.sh)"
+endif
+
 # if no one else has defined it by now, build us a default buildid
 # based on the current time.
 # suffix it with _LOCAL if OFFICIAL_BUILD is unset

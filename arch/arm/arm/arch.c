@@ -20,6 +20,7 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
+#include <compiler.h>
 #include <debug.h>
 #include <trace.h>
 #include <stdlib.h>
@@ -65,6 +66,7 @@ static void spinlock_test_secondary(void);
 /* smp boot lock */
 spin_lock_t arm_boot_cpu_lock = 1;
 volatile int secondaries_to_init = 0;
+__WEAK const uint8_t *linear_cpuid_map;
 #endif
 
 void arch_early_init(void)

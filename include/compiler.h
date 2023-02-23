@@ -98,13 +98,13 @@
 #define __WARN_UNUSED_RESULT
 #endif
 
-#if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1)
+#if ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1) && !defined(__clang__))
 #define __EXTERNALLY_VISIBLE __attribute__((externally_visible))
 #else
 #define __EXTERNALLY_VISIBLE
 #endif
 
-#if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5)
+#if (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 5) || defined(__clang__)
 #define __UNREACHABLE __builtin_unreachable()
 #else
 #define __UNREACHABLE

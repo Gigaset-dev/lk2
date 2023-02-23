@@ -23,6 +23,7 @@
 #include <asm.h>
 #include <arch/arm/cores.h>
 #include <arch/arm/mmu.h>
+#include <arch/arch_ops.h>
 #include <kernel/vm.h>
 
 .section ".text.boot"
@@ -356,7 +357,15 @@ FUNCTION(arm_secondary_setup)
     bge     unsupported_cpu_trap
     bic     r0, r0, #0xff
     orr     r0, r1, r0, LSR #(8 - SMP_CPU_CLUSTER_SHIFT)
+    ldr     r1, =linear_cpuid_map
+    add     r1, r1, r11
+    ldr     r1, [r1]
+    cmp     r1, #0
+    beq     .Lno_cpuid_remap
+    add     r1, r1, r0
+    ldrb    r0, [r1]
 
+.Lno_cpuid_remap:
     cmp     r0, #SMP_MAX_CPUS
     bge     unsupported_cpu_trap
     mov     r5, r0 /* save cpu num */

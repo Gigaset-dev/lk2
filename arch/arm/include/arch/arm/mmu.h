@@ -215,6 +215,7 @@ __BEGIN_CDECLS
 void arm_mmu_early_init(void);
 void arm_mmu_init(void);
 status_t arm_vtop(addr_t va, addr_t *pa);
+uint32_t mmu_flags_to_l1_arch_flags(uint flags);
 
 /* tlb routines */
 

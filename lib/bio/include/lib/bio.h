@@ -52,6 +52,8 @@ typedef struct bdev {
     size_t block_size;
     size_t block_shift;
     bnum_t block_count;
+    char *label;
+    bool is_gpt;
 
     size_t geometry_count;
     const bio_erase_geometry_info_t *geometry;
@@ -72,6 +74,7 @@ typedef struct bdev {
 
 /* user api */
 bdev_t *bio_open(const char *name);
+bdev_t *bio_open_by_label(const char *label);
 void bio_close(bdev_t *dev);
 ssize_t bio_read(bdev_t *dev, void *buf, off_t offset, size_t len);
 ssize_t bio_read_block(bdev_t *dev, void *buf, bnum_t block, uint count);

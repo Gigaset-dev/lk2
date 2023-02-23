@@ -24,13 +24,13 @@
 #include <string.h>
 #include <sys/types.h>
 
-char const *
+char *
 strerror(int errnum)
 {
     if (errnum < 0) {
-        return "General Error";
+        return (char *)"General Error";
     } else {
-        return "No Error";
+        return (char *)"No Error";
     }
 }
 

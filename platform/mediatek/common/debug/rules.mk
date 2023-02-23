@@ -1,0 +1,18 @@
+LOCAL_DIR := $(GET_LOCAL_DIR)
+MODULE := $(LOCAL_DIR)
+
+DEBUG_UART ?= 0
+DEBUG_BAUDRATE ?= 921600
+
+GLOBAL_DEFINES += \
+	DEBUG_UART=$(DEBUG_UART) \
+	DEBUG_BAUDRATE=$(DEBUG_BAUDRATE)
+
+MODULE_SRCS += \
+	$(LOCAL_DIR)/debug.c \
+	$(LOCAL_DIR)/platform_halt.c
+
+MODULE_DEPS += \
+	platform/$(PLATFORM)/common/wdt
+
+include make/module.mk

@@ -50,11 +50,15 @@ static mutex_t lock = MUTEX_INITIAL_VALUE(lock);
 
 static inline bool page_is_free(const vm_page_t *page)
 {
+    DEBUG_ASSERT(page);
+
     return !(page->flags & VM_PAGE_FLAG_NONFREE);
 }
 
 paddr_t vm_page_to_paddr(const vm_page_t *page)
 {
+    DEBUG_ASSERT(page);
+
     pmm_arena_t *a;
     list_for_every_entry(&arena_list, a, pmm_arena_t, node) {
         if (PAGE_BELONGS_TO_ARENA(page, a)) {
@@ -78,11 +82,12 @@ vm_page_t *paddr_to_vm_page(paddr_t addr)
 
 status_t pmm_add_arena(pmm_arena_t *arena)
 {
-    LTRACEF("arena %p name '%s' base 0x%lx size 0x%zx\n", arena, arena->name, arena->base, arena->size);
-
+    DEBUG_ASSERT(arena);
     DEBUG_ASSERT(IS_PAGE_ALIGNED(arena->base));
     DEBUG_ASSERT(IS_PAGE_ALIGNED(arena->size));
     DEBUG_ASSERT(arena->size > 0);
+
+    LTRACEF("arena %p name '%s' base 0x%lx size 0x%zx\n", arena, arena->name, arena->base, arena->size);
 
     /* walk the arena list and add arena based on priority order */
     pmm_arena_t *a;
@@ -238,6 +243,8 @@ size_t pmm_free(struct list_node *list)
 
 size_t pmm_free_page(vm_page_t *page)
 {
+    DEBUG_ASSERT(page);
+
     struct list_node list;
     list_initialize(&list);
 
@@ -365,11 +372,15 @@ retry:
 
 static void dump_page(const vm_page_t *page)
 {
+    DEBUG_ASSERT(page);
+
     printf("page %p: address 0x%lx flags 0x%x\n", page, vm_page_to_paddr(page), page->flags);
 }
 
 static void dump_arena(const pmm_arena_t *arena, bool dump_pages)
 {
+    DEBUG_ASSERT(arena);
+
     printf("arena %p: name '%s' base 0x%lx size 0x%zx priority %u flags 0x%x\n",
            arena, arena->name, arena->base, arena->size, arena->priority, arena->flags);
     printf("\tpage_array %p, free_count %zu\n",

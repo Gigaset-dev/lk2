@@ -56,7 +56,7 @@ CONFIGHEADER := $(BUILDDIR)/config.h
 GLOBAL_INCLUDES := $(BUILDDIR) $(addsuffix /include,$(LKINC))
 GLOBAL_OPTFLAGS ?= $(ARCH_OPTFLAGS)
 GLOBAL_COMPILEFLAGS := -g -finline -include $(CONFIGHEADER)
-GLOBAL_COMPILEFLAGS += -W -Wall -Wno-multichar -Wno-unused-parameter -Wno-unused-function -Wno-unused-label -Werror=return-type -Wno-nonnull-compare
+GLOBAL_COMPILEFLAGS += -W -Wall -Wno-multichar -Wno-unused-parameter -Wno-unused-function -Wno-unused-label -Werror=return-type
 GLOBAL_COMPILEFLAGS += -fno-common
 GLOBAL_CFLAGS := --std=gnu11 -Werror-implicit-function-declaration -Wstrict-prototypes -Wwrite-strings
 GLOBAL_CPPFLAGS := --std=c++11 -fno-exceptions -fno-rtti -fno-threadsafe-statics
@@ -196,8 +196,14 @@ endif
 
 # default to no ccache
 CCACHE ?=
+ifneq ($(CLANG_BINDIR),)
+CC := $(CCACHE) $(CLANG_BINDIR)/clang
+GLOBAL_COMPILEFLAGS += -no-integrated-as
+GLOBAL_COMPILEFLAGS += -fno-builtin-bcmp
+else
 CC := $(CCACHE) $(TOOLCHAIN_PREFIX)gcc
-LD := $(TOOLCHAIN_PREFIX)ld
+endif
+LD := $(TOOLCHAIN_PREFIX)ld.bfd
 OBJDUMP := $(TOOLCHAIN_PREFIX)objdump
 OBJCOPY := $(TOOLCHAIN_PREFIX)objcopy
 CPPFILT := $(TOOLCHAIN_PREFIX)c++filt

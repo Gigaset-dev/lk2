@@ -193,6 +193,30 @@ GLOBAL_DEFINES += \
 HANDLED_CORE := true
 ENABLE_THUMB := false # armemu doesn't currently support thumb properly
 endif
+ifeq ($(ARM_CPU),armv8-a)
+GLOBAL_DEFINES += \
+	ARM_CPU_CORTEX_ARMV8_A=1 \
+	ARM_WITH_CP15=1 \
+	ARM_WITH_MMU=1 \
+	ARM_ISA_ARMv7=1 \
+	ARM_ISA_ARMv7A=1 \
+	ARM_WITH_THUMB=1 \
+	ARM_WITH_THUMB2=1 \
+	ARM_WITH_CACHE=1 \
+	ARM_WITH_L2=1
+ifneq ($(ARM_WITHOUT_VFP_NEON),true)
+GLOBAL_DEFINES += \
+	ARM_WITH_VFP=1 \
+	ARM_WITH_NEON=1
+# Enable optional instructions unless platform already disabled them
+USE_ARM_V7_NEON ?= true
+USE_ARM_V8_AES ?= true
+USE_ARM_V8_PMULL ?= true
+USE_ARM_V8_SHA1 ?= true
+USE_ARM_V8_SHA2 ?= true
+endif
+HANDLED_CORE := true
+endif
 
 ifneq ($(HANDLED_CORE),true)
 $(error $(LOCAL_DIR)/rules.mk doesnt have logic for arm core $(ARM_CPU))
@@ -202,7 +226,6 @@ THUMBCFLAGS :=
 THUMBINTERWORK :=
 ifeq ($(ENABLE_THUMB),true)
 THUMBCFLAGS := -mthumb -D__thumb__
-THUMBINTERWORK := -mthumb-interwork
 endif
 
 GLOBAL_INCLUDES += \
@@ -306,13 +329,16 @@ $(info TOOLCHAIN_PREFIX = $(TOOLCHAIN_PREFIX))
 
 ARCH_COMPILEFLAGS += $(ARCH_$(ARCH)_COMPILEFLAGS)
 
-GLOBAL_COMPILEFLAGS += $(THUMBINTERWORK)
 
 # set the max page size to something more reasonables (defaults to 64K or above)
 ARCH_LDFLAGS += -z max-page-size=4096
 
 # find the direct path to libgcc.a for our particular multilib variant
+ifeq ($(CLANG_BINDIR),)
 LIBGCC := $(shell $(TOOLCHAIN_PREFIX)gcc $(GLOBAL_COMPILEFLAGS) $(ARCH_COMPILEFLAGS) $(THUMBCFLAGS) -print-libgcc-file-name)
+else
+LIBGCC := $(CLANG_BINDIR)/../runtimes_ndk_cxx/libclang_rt.builtins-$(ARCH)-android.a
+endif
 #$(info LIBGCC = $(LIBGCC))
 #$(info LIBGCC COMPILEFLAGS = $(GLOBAL_COMPILEFLAGS) $(ARCH_COMPILEFLAGS) $(THUMBCFLAGS))
 

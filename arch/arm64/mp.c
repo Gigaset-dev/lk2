@@ -23,6 +23,7 @@
 #include <arch/mp.h>
 
 #include <assert.h>
+#include <compiler.h>
 #include <trace.h>
 #include <err.h>
 #include <platform/interrupts.h>
@@ -41,7 +42,7 @@ extern void bcm28xx_send_ipi(uint irq, uint cpu_mask);
 
 #define GIC_IPI_BASE (14)
 
-status_t arch_mp_send_ipi(mp_cpu_mask_t target, mp_ipi_t ipi)
+__WEAK status_t arch_mp_send_ipi(mp_cpu_mask_t target, mp_ipi_t ipi)
 {
     LTRACEF("target 0x%x, ipi %u\n", target, ipi);
 
@@ -79,7 +80,7 @@ enum handler_return arm_ipi_reschedule_handler(void *arg)
     return mp_mbx_reschedule_irq();
 }
 
-void arch_mp_init_percpu(void)
+__WEAK void arch_mp_init_percpu(void)
 {
     register_int_handler(MP_IPI_GENERIC + GIC_IPI_BASE, &arm_ipi_generic_handler, 0);
     register_int_handler(MP_IPI_RESCHEDULE + GIC_IPI_BASE, &arm_ipi_reschedule_handler, 0);
