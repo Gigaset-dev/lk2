@@ -613,26 +613,16 @@ void bio_unregister_device(bdev_t *dev)
 
 void bio_dump_devices(void)
 {
-    printf("block devices:\n");
+    video_printf("block devices:\n");
     bdev_t *entry;
     mutex_acquire(&bdevs.lock);
     list_for_every_entry(&bdevs.list, entry, bdev_t, node) {
 
-        printf("\t%s, size %lld, bsize %zd, ref %d, label %s",
-               entry->name, entry->total_size, entry->block_size, entry->ref, entry->label);
+        video_printf("\t%s ",
+               entry->name);
 
-        if (!entry->geometry_count || !entry->geometry) {
-            printf(" (no erase geometry)\n");
-        } else {
-            for (size_t i = 0; i < entry->geometry_count; ++i) {
-                const bio_erase_geometry_info_t *geo = entry->geometry + i;
-                printf("\n\t\terase_region[%zu] : start %lld size %lld erase size %zu",
-                       i, geo->start, geo->size, geo->erase_size);
 
-            }
-        }
-
-        printf("\n");
     }
+    video_printf("\n");
     mutex_release(&bdevs.lock);
 }

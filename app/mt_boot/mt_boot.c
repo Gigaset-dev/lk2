@@ -730,6 +730,8 @@ void mt_boot_entry(const struct app_descriptor *app, void *args)
     /* Wait for boot linux event */
     wait_for_boot_linux();
     /* Will not return */
+    droidboot_init();
+    droidboot_show_dualboot_menu();
     boot_linux_from_storage();
 }
 

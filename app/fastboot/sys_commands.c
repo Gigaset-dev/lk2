@@ -305,6 +305,32 @@ FASTBOOT_OEM_CMD_START(cmd_oem_off_mode_charge)
 FASTBOOT_OEM_CMD_END
 #endif
 
+void cmd_oem_bio_dump_devices(const char *arg, void *data, unsigned int sz)
+{
+    bio_dump_devices();
+    fastboot_okay("");
+}
+
+FASTBOOT_OEM_CMD_START(cmd_oem_bio_dump_devices)
+    .cmd_str = "oem bio_dump_devices",
+    .cmd_handler = cmd_oem_bio_dump_devices,
+    .allowed_when_security_on = true,
+    .forbidden_when_lock_on = false,
+FASTBOOT_OEM_CMD_END
+
+void cmd_oem_sd_init(const char *arg, void *data, unsigned int sz)
+{
+    sdcard_init();
+    fastboot_okay("");
+}
+
+FASTBOOT_OEM_CMD_START(cmd_oem_sd_init)
+    .cmd_str = "oem sd_init",
+    .cmd_handler = cmd_oem_sd_init,
+    .allowed_when_security_on = true,
+    .forbidden_when_lock_on = false,
+FASTBOOT_OEM_CMD_END
+
 #ifdef MTK_MRDUMP_ENABLE
 /* register fastboot oem function */
 static void cmd_oem_mrdump_out(const char *arg, void *data, unsigned int sz)

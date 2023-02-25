@@ -43,7 +43,8 @@ enum DISP_PROG_BAR_DIRECT {
 // ---------------------------------------------------------------------------
 //  UBoot Display Export Functions
 // ---------------------------------------------------------------------------
-
+void mtkfb_draw_block(unsigned int x, unsigned int y, unsigned int w,
+                                unsigned int h, unsigned int color);
 u32 mt_disp_get_vram_size(void);
 void disp_init(void *fdt);
 void disp_sw_init(void *fdt);

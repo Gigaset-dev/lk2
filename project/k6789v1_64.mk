@@ -1,7 +1,7 @@
 LOCAL_DIR := $(GET_LOCAL_DIR)
 
 TARGET := k6789v1_64
-
+DROIDBOOT_PLATFORM := GX4
 ifeq ($(LK_AS), BL2_EXT)
 BOOT_APP ?= bl2_ext
 else ifeq ($(LK_AS), AEE)
@@ -15,7 +15,8 @@ BOOT_APP ?= mt_boot
 MODULE_DEPS += app/fastboot \
 	app/fastboot/device_lock \
 	app/fastboot/flash \
-	app/fastboot/usb
+	app/fastboot/usb \
+	app/droidboot_gui
 endif
 
 MODULE_DEPS += app/$(BOOT_APP)

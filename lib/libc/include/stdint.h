@@ -139,5 +139,19 @@ typedef unsigned long long uintmax_t;
 #define INTMAX_C(c)       INT64_C(c)
 #define UINTMAX_C(c)      UINT64_C(c)
 
+/* Minimum and maximum values a `signed short int' can hold.  */
+#undef SHORT_MIN
+#define SHORT_MIN (-SHRT_MAX - 1)
+#undef SHORT_MAX
+#define SHORT_MAX __SHRT_MAX__
+
+/* Maximum value an `unsigned short int' can hold.  (Minimum is 0).  */
+#undef USOHRT_MAX
+#if __SHRT_MAX__ == __INT_MAX__
+# define USHORT_MAX (SHRT_MAX * 2U + 1U)
+#else
+# define USHORT_MAX (SHRT_MAX * 2 + 1)
+#endif
+
 #endif
 
