@@ -28,14 +28,16 @@
  */
 
 #pragma once
-#include <lib/bio.h>
 #include <sys/types.h>
+
+#define MTK_ULTRA_FLASH 1
+
+#define MAX_PARTITION_NAME_LEN 32
 
 #define ROUND_TO_PAGE(x, y) (((x) + (y)) & (~(y)))
 #define PARTITION_NAME_SIZE MAX_PARTITION_NAME_LEN
+#define MAX_EXT_SIG_LEN (2 * 1024 * 1024)
 
-#define MTK_ULTRA_FLASH                  (1)
-#define MAX_EXT_SIG_LEN                  (2 * 1024 * 1024)
 #define STATUS_OK                        (0)
 #define STATUS_ERR                       (1)
 #define STATUS_INVALID_PARAMETERS        (-100)
@@ -47,6 +49,7 @@
 #define STATUS_UNKNOWN_SPARSE_CHUNK_TYPE (-106)
 
 #define STATUS_SPARSE_INCOMPLETE (100)
+#define FAIL(code) (((status_t)(code)) < 0)
 
 struct partition_info_struct {
     bdev_t *bdev;

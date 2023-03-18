@@ -99,7 +99,7 @@ __WEAK bool get_dl_policy(const char *part_name)
 
 bool cmd_download_ultra(const char *arg, void *data, unsigned int sz)
 {
-    status_t ret = STATUS_OK;
+    status_t status = STATUS_OK;
     bdev_t *bdev = NULL;
 
     char response[MAX_RSP_SIZE];
@@ -129,10 +129,10 @@ bool cmd_download_ultra(const char *arg, void *data, unsigned int sz)
     dprintf(ALWAYS, "download part_name[%s] part_max_sz[0x%llx] down_len [0x%llx]\n",
          partition_name_history, part_info.max_size, len);
 
-    ret = download_data(len, &part_info);
+    status = download_data(len, &part_info);
 
-    if (ret) {
-        snprintf(response, MAX_RSP_SIZE, "Transmission FAIL: [%d]", ret);
+    if (FAIL(status)) {
+        snprintf(response, MAX_RSP_SIZE, "Transmission FAIL: [%d]", status);
         fastboot_fail(response);
         bio_close(bdev);
         return false;
@@ -286,66 +286,10 @@ void cmd_download(const char *arg, void *data, unsigned int sz)
     return;
 }
 
-void flash_auth_cert(void *data, unsigned int sz)
-{
-    int ret = 0;
-    off_t size = 0;
-    bdev_t *bdev = NULL;
-    char partition[MAX_GPT_NAME_SIZE] = {0};
-
-    ret = partition_get_active_preloader(partition, MAX_GPT_NAME_SIZE);
-
-    if (ret) {
-        fastboot_fail("get active preloader fail");
-        return;
-    }
-
-    if (get_dl_policy(partition) == false) {
-        fastboot_fail("partition is not writable");
-        return;
-    }
-
-    bdev = bio_open_by_label(partition);
-
-    if (bdev == NULL)
-        bdev = bio_open(partition);
-
-    if (bdev == NULL) {
-        fastboot_fail("partition does not exist");
-        return;
-    }
-
-    if (process_auth_cert(bdev, data, &sz) != 0) {
-        fastboot_fail("process auth_cert fail.");
-        bio_close(bdev);
-        return;
-    }
-
-    size = bdev->total_size;
-
-    if (ROUND_TO_PAGE(sz, 511) > size) {
-        fastboot_fail("data size is larger than partition size.");
-        bio_close(bdev);
-        return;
-    }
-
-    if ((unsigned int)bio_write(bdev, data, 0, sz) != sz) {
-        fastboot_fail("flash write failure");
-        bio_close(bdev);
-        return;
-    }
-
-    fastboot_okay("");
-    bio_close(bdev);
-
-    return;
-}
-
 void cmd_flash_bio_img(const char *arg, void *data, unsigned int sz)
 {
     off_t size = 0;
     bdev_t *bdev = NULL;
-    char cert[] = "auth_cert";
 
     if (strnicmp(arg, "gpt", 4) == 0) {
         if (partition_update_gpt_table(data, sz) != 0)
@@ -354,17 +298,6 @@ void cmd_flash_bio_img(const char *arg, void *data, unsigned int sz)
             fastboot_okay("");
         return;
     }
-
-    if (strnicmp(arg, cert, sizeof(cert)) == 0) {
-        flash_auth_cert(data, sz);
-        return;
-    }
-
-    if (get_dl_policy(arg) == false) {
-        fastboot_fail("partition is not writable");
-        return;
-    }
-
     bdev = bio_open_by_label(arg);
     if (bdev == NULL)
         bdev = bio_open(arg);
@@ -374,10 +307,9 @@ void cmd_flash_bio_img(const char *arg, void *data, unsigned int sz)
         return;
     }
 
-    if (strnicmp(arg, "preloader", sizeof("preloader") - 1) == 0) {
+    if (strnicmp(arg, "preloader", 9) == 0) {
         if (process_preloader(data, &sz) != 0) {
             fastboot_fail("process preloader fail.");
-            bio_close(bdev);
             return;
         }
     }
@@ -394,7 +326,7 @@ void cmd_flash_bio_img(const char *arg, void *data, unsigned int sz)
         fastboot_fail("flash write failure");
         bio_close(bdev);
         return;
-    }
+        }
 
     if (bdev->is_gpt == false) { // root device
         ssize_t ret;
@@ -498,7 +430,6 @@ void cmd_flash_bio_sparse_img(const char *arg, void *data, unsigned int sz)
             ((unsigned long long)chunk_header->chunk_sz + total_blocks) >
             (unsigned long long)size) {
             fastboot_fail("sparse chunk size overflow.");
-            bio_close(bdev);
             return;
         }
 
@@ -666,69 +597,12 @@ void cmd_flash_bio(const char *arg, void *data, unsigned int sz)
     return;
 }
 
-void erase_auth_cert(void *data, unsigned int sz)
-{
-    int ret = 0;
-    uint32_t size = 0;
-    off_t offset = 0;
-    bdev_t *bdev = NULL;
-    char partition[MAX_GPT_NAME_SIZE] = {0};
 
-    ret = partition_get_active_preloader(partition, MAX_GPT_NAME_SIZE);
-
-    if (ret) {
-        fastboot_fail("get active preloader fail");
-        return;
-    }
-
-    if (get_dl_policy(partition) == false) {
-        fastboot_fail("partition is not writable");
-        return;
-    }
-
-    bdev = bio_open_by_label(partition);
-
-    if (bdev == NULL)
-        bdev = bio_open(partition);
-
-    if (bdev == NULL) {
-        fastboot_fail("partition does not exist");
-        return;
-    }
-
-    size = (uint32_t)bdev->total_size;
-
-    if (process_erase_auth_cert(bdev, &offset, &size) != 0) {
-        fastboot_fail("process auth_cert fail.");
-        bio_close(bdev);
-        return;
-    }
-
-    ret = bio_erase(bdev, offset, size);
-
-    if (ret < 0) {
-        fastboot_fail("erase failed");
-        goto closebdev;
-    }
-
-    fastboot_okay("");
-
-closebdev:
-    bio_close(bdev);
-    return;
-
-}
 
 void cmd_erase_bio(const char *arg, void *data, unsigned int sz)
 {
     ssize_t ret;
     bdev_t *bdev = NULL;
-    char cert[] = "auth_cert";
-
-    if (strnicmp(arg, cert, sizeof(cert)) == 0) {
-        erase_auth_cert(data, sz);
-        return;
-    }
 
     if (get_dl_policy(arg) == false) {
         fastboot_fail("partition is not writable");
@@ -764,4 +638,3 @@ closebdev:
         bio_close(bdev);
         return;
 }
-

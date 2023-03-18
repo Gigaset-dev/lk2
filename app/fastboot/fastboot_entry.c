@@ -43,11 +43,12 @@
 #endif
 #include <kernel/event.h>
 #include <kernel/timer.h>
+#include <kernel/vm.h>
 #include <lib/bio.h>
 #if WITH_APP_FASTBOOT_DEVICE_LOCK
 #include <lock_state.h>
 #endif
-#include <malloc.h>
+#include <mblock.h>
 #ifdef WITH_PLATFORM_MEDIATEK_COMMON_CHARGER
 #include <mtk_charger.h>
 #endif
@@ -71,10 +72,14 @@
 #endif
 
 #ifndef CUSTOM_FASTBOOT_BUF_SIZE
-#define BUF_SIZE                (0x4000000)
+#define BUF_SIZE                (0x8000000) /* 128MB */
 #else
 #define BUF_SIZE CUSTOM_FASTBOOT_BUF_SIZE
 #endif
+#define DL_BUFFER_RSV_NAME      "system_fastboot_buffer"
+#define DL_BUFFER_LIMIT_ADDR    (0xFFFFFFFF)
+/* the address for download buffer */
+void *download_buffer;
 
 static event_t enter_fastboot_event = EVENT_INITIAL_VALUE(enter_fastboot_event, false, 0);
 static timer_t wdt_timer;
@@ -154,6 +159,7 @@ static void publish_attributes(void)
     fastboot_publish("product", PROJECT);
     fastboot_publish("serialno", get_serialno());
     fastboot_publish("is-userspace", "no");
+    fastboot_publish("protocol_version", "1");
 #if (WITH_PLATFORM_MEDIATEK_COMMON_MD && LK_AS_BL33)
     fastboot_publish("version-baseband", (const char *)radio_version);
 #endif
@@ -249,10 +255,46 @@ static void unregister_commands(void)
     fastboot_unregister_all();
 }
 
+/* Use mblock to allocate fastboot download buffer */
+static void alloc_download_buf(void)
+{
+    status_t err;
+    u64 buf_pa;
+
+    /* Don't allocate mblock  if BUF_SIZE is set to 0 (AEE LK)  */
+    if (BUF_SIZE == 0)
+        return;
+
+    buf_pa = mblock_alloc(BUF_SIZE, PAGE_SIZE, DL_BUFFER_LIMIT_ADDR, 0, MBLOCK_NO_MAP,
+                          DL_BUFFER_RSV_NAME);
+    if (!buf_pa) {
+        dprintf(CRITICAL, "fastboot_buffer alloc fails.\n");
+        ASSERT(0);
+    }
+    err = vmm_alloc_physical(vmm_get_kernel_aspace(), "fastboot_buffer", BUF_SIZE,
+        &download_buffer, PAGE_SIZE_SHIFT, (paddr_t)buf_pa, 0, ARCH_MMU_FLAG_CACHED);
+
+    if (err) {
+        dprintf(CRITICAL, "map error for fastboot_buffer\n");
+        ASSERT(0);
+    }
+    memset(download_buffer, 0x0, BUF_SIZE);
+}
+
+static void free_download_buf(void)
+{
+    paddr_t buf_pa = vaddr_to_paddr(download_buffer);
+
+    if (BUF_SIZE == 0)
+        return;
+
+    dprintf(CRITICAL, "mblock_free:0x%lx\n", buf_pa);
+    mblock_free(buf_pa);
+    vmm_free_region(vmm_get_kernel_aspace(), (vaddr_t)download_buffer);
+}
+
 static void fastboot_entry(const struct app_descriptor *app, void *args)
 {
-    void *buf;
-
     wait_for_enter_fastboot();
 
     timer_initialize(&wdt_timer);
@@ -265,12 +307,15 @@ static void fastboot_entry(const struct app_descriptor *app, void *args)
 #endif
     publish_attributes();
 
-    buf = malloc(BUF_SIZE);
-    if (buf) {
-        fastboot_init(buf, BUF_SIZE);
-        free(buf);
+    /* Allocate download buffer */
+    alloc_download_buf();
+
+    if (download_buffer || BUF_SIZE == 0) {
+        LTRACEF("fastboot_init buf:0x%lx size:0x%x\n", (unsigned long)download_buffer, BUF_SIZE);
+        fastboot_init(download_buffer, BUF_SIZE);
+        free_download_buf();
     } else {
-        LTRACEF("malloc 0x%x bytes failed.\n", BUF_SIZE);
+        dprintf(CRITICAL, "Allocate 0x%x bytes failed.\n", BUF_SIZE);
     }
 
     unregister_commands();

@@ -19,6 +19,8 @@
 #define SDCARD_SUPPORT
 #endif
 
+#define SDCARD_SUPPORT
+
 #define MSDC_MAX_NUM 2
 
 /* HW deal with the 2K DMA boundary limitation, SW do nothing with it */

@@ -1210,6 +1210,7 @@ void msdc_config_clock(struct mmc_host *host, int state, u32 hz)
             sclk = (host->src_clk >> 2) / div;
         }
     }
+    video_printf("MSDC going to set bus clock to: %d\n", sclk);
     host->cur_bus_clk = sclk;
 
     /* set clock mode and divisor */
@@ -1866,6 +1867,7 @@ int msdc_init(struct mmc_host *host)
 #endif
 
     dprintf(ALWAYS, "[%s]: Host controller initialization done\n", __func__);
+
     return 0;
 }
 

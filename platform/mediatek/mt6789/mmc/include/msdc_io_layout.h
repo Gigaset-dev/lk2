@@ -65,7 +65,7 @@ extern u32 *hclks_msdc_all[];
 /*******************************************************************************
  * Power Definition
  ******************************************************************************/
-enum MSDC_POWER_VOL {
+typedef enum MSDC_POWER_VOL_TAG {
     VOL_DEFAULT,
     VOL_0900 = 900,
     VOL_1000 = 1000,
@@ -85,13 +85,13 @@ enum MSDC_POWER_VOL {
     VOL_3400 = 3400,
     VOL_3500 = 3500,
     VOL_3600 = 3600
-};
+} MSDC_POWER_VOLTAGE;
 
-enum MSDC_POWER {
-    MSDC_VMC,
-    MSDC_VMCH,
-    MSDC_VEMC,
-};
+typedef enum MSDC_POWER_TAG {
+	MSDC_VMC,
+	MSDC_VMCH,
+	MSDC_VEMC,
+} MSDC_POWER;
 
 #define EMMC_VOL_ACTUAL         VOL_3000
 #define SD_VOL_ACTUAL           VOL_3000

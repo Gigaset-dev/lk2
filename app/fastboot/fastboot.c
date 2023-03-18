@@ -324,7 +324,6 @@ static int fastboot_command_loop(void)
         dprintf(CRITICAL, "fastboot: can't allocate memory\n");
         return ERR_NO_MEMORY;
     }
-    dprintf(ALWAYS, "fastboot: processing commands\n");
 
 again:
     while ((fastboot_state != STATE_ERROR) && (fastboot_state != STATE_RETURN)) {
@@ -332,6 +331,8 @@ again:
             timer_set_periodic(&fastboot_idle_timer, fastboot_idle_timeout,
                 (timer_callback)fastboot_idle_reboot, NULL);
         }
+        dprintf(ALWAYS, "fastboot: waiting commands\n");
+
         r = interface->read(buffer, MAX_RSP_SIZE);
         if ((strncmp(interface->name, "usb", strlen(interface->name)) == 0) && r < 0)
             break; /* no input command */

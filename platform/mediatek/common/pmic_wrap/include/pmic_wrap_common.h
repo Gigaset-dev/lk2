@@ -157,13 +157,13 @@ typedef u32 (*loop_condition_fp)(u32);
 
 static inline u32 wait_for_fsm_vldclr(u32 x)
 {
-    return ((x >> RDATA_WACS_FSM_SHIFT) & RDATA_WACS_FSM_MASK) !=
+    return ((x >> 16) & RDATA_WACS_FSM_MASK) !=
             WACS_FSM_WFVLDCLR;
 }
 
 static inline u32 wait_for_fsm_idle(u32 x)
 {
-    return ((x >> RDATA_WACS_FSM_SHIFT) & RDATA_WACS_FSM_MASK) !=
+    return ((x >> 16) & RDATA_WACS_FSM_MASK) !=
             WACS_FSM_IDLE;
 }
 

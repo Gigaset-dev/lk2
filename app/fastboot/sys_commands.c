@@ -98,7 +98,7 @@ void cmd_reboot_bootloader(const char *arg, void *data, unsigned int sz)
 static void cmd_reboot_recovery_common(const char *reason)
 {
     bdev_t *dev_misc = bio_open_by_label("misc");
-    const unsigned int size = MISC_PAGE_SZ * MISC_PAGES;
+    const unsigned int size = 2048; // size of bootloader_message
     char *pmisc_msg = NULL;
 
     if (!dev_misc) {
@@ -305,32 +305,6 @@ FASTBOOT_OEM_CMD_START(cmd_oem_off_mode_charge)
 FASTBOOT_OEM_CMD_END
 #endif
 
-void cmd_oem_bio_dump_devices(const char *arg, void *data, unsigned int sz)
-{
-    bio_dump_devices();
-    fastboot_okay("");
-}
-
-FASTBOOT_OEM_CMD_START(cmd_oem_bio_dump_devices)
-    .cmd_str = "oem bio_dump_devices",
-    .cmd_handler = cmd_oem_bio_dump_devices,
-    .allowed_when_security_on = true,
-    .forbidden_when_lock_on = false,
-FASTBOOT_OEM_CMD_END
-
-void cmd_oem_sd_init(const char *arg, void *data, unsigned int sz)
-{
-    sdcard_init();
-    fastboot_okay("");
-}
-
-FASTBOOT_OEM_CMD_START(cmd_oem_sd_init)
-    .cmd_str = "oem sd_init",
-    .cmd_handler = cmd_oem_sd_init,
-    .allowed_when_security_on = true,
-    .forbidden_when_lock_on = false,
-FASTBOOT_OEM_CMD_END
-
 #ifdef MTK_MRDUMP_ENABLE
 /* register fastboot oem function */
 static void cmd_oem_mrdump_out(const char *arg, void *data, unsigned int sz)
@@ -412,6 +386,12 @@ static void cmd_oem_mrdump_chkimg(const char *arg, void *data, unsigned int sz)
     int status = mrdump_check_enable();
 
     switch (status) {
+    case MRDUMP_RUNTIME_ENABLE:
+        fastboot_info("mrdump runtime enabled");
+        break;
+    case MRDUMP_RUNTIME_DISABLE:
+        fastboot_info("mrdump runtime disabled");
+        break;
     case MRDUMP_SUCCESS_ENABLE:
         fastboot_info("mrdump successfully enabled");
         break;
@@ -520,4 +500,30 @@ FASTBOOT_OEM_CMD_START(cmd_oem_get_socid)
     .cmd_handler = cmd_oem_get_socid,
     .allowed_when_security_on = true,
     .forbidden_when_lock_on = true,
+FASTBOOT_OEM_CMD_END
+
+void cmd_oem_sd_init(const char *arg, void *data, unsigned int sz)
+{
+    sdcard_init();
+    fastboot_okay("");
+}
+
+FASTBOOT_OEM_CMD_START(cmd_oem_sd_init)
+    .cmd_str = "oem sd_init",
+    .cmd_handler = cmd_oem_sd_init,
+    .allowed_when_security_on = true,
+    .forbidden_when_lock_on = false,
+FASTBOOT_OEM_CMD_END
+
+void cmd_oem_bio_dump(const char *arg, void *data, unsigned int sz)
+{
+    bio_dump_devices();
+    fastboot_okay("");
+}
+
+FASTBOOT_OEM_CMD_START(cmd_oem_bio_dump)
+    .cmd_str = "oem bio_dump",
+    .cmd_handler = cmd_oem_bio_dump,
+    .allowed_when_security_on = true,
+    .forbidden_when_lock_on = false,
 FASTBOOT_OEM_CMD_END

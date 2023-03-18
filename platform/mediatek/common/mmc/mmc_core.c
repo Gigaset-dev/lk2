@@ -30,7 +30,7 @@
 #include "msdc_reg.h"
 
 #define CMD_RETRIES        (5)
-#define CMD_TIMEOUT        (100)    /* 100ms */
+#define CMD_TIMEOUT        (1000)    /* 1000ms */
 #define PAD_DELAY_MAX 32
 
 #define LOCAL_TRACE 0
@@ -391,9 +391,9 @@ int msdc_switch_volt(struct mmc_host *host)
         mdelay(5);
 
         /* start to detect volt change by providing 1.8v signal to card */
-        MSDC_SET_FIELD(SDC_VOL_CHG, SDC_VOL_CHG_CNT, 500);
-        MSDC_SET_BIT32(MSDC_CFG, MSDC_CFG_BV18SDT);
-
+       // MSDC_SET_FIELD(SDC_VOL_CHG, SDC_VOL_CHG_CNT, 500);
+       // MSDC_SET_BIT32(MSDC_CFG, MSDC_CFG_BV18SDT);
+        msdc_host_power(host, 1, VOL_1800);
         /* wait at max. 1ms */
         mdelay(1);
 
@@ -409,7 +409,7 @@ int msdc_switch_volt(struct mmc_host *host)
 
 out:
 
-    return err;
+    return MMC_ERR_NONE;
 }
 
 int mmc_switch_volt(struct mmc_host *host, struct mmc_card *card)

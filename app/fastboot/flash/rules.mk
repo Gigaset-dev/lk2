@@ -14,6 +14,6 @@ MODULE_DEPS += \
 	lib/bio \
 	lib/partition \
 	platform/$(PLATFORM)/common/partition_utils \
-	platform/$(PLATFORM)/common/sboot \
+	platform/$(PLATFORM)/common/sboot
 
 include make/module.mk

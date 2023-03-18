@@ -15,8 +15,8 @@
 #include <sys/types.h>
 #include <trace.h>
 
-#define CLDMA_TX_RX_TIMEOUT 5000 /* 5 sec. */
-#define MAX_CLDMA_BULK_SIZE (1024)
+#define CLDMA_TX_RX_TIMEOUT 15000 /* 15 sec. */
+#define MAX_CLDMA_BULK_SIZE 2048
 
 static status_t pcie_init(void)
 {

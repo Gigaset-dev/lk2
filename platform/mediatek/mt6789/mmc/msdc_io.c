@@ -19,7 +19,8 @@
 #include <partition_utils.h>
 #include <stdbool.h>
 #include <subpmic.h>
-
+#include <pmic_wrap.h>
+#include <gpio_api.h>
 #include "msdc_io.h"
 
 //#define MTK_MSDC_BRINGUP_DEBUG
@@ -30,7 +31,38 @@ u32 g_msdc1_io;
 u32 g_msdc0_flash;
 u32 g_msdc1_flash;
 
+#define msdc_pr_err(fmt, args...)       dprintf(CRITICAL, fmt, ##args)
+#define msdc_pr_info(fmt, args...)      dprintf(INFO, fmt, ##args)
+
 #define CMDLINE_BUF_SIZE 128
+
+u32 pmic_config_interface (u32 RegNum, u32 val, u32 MASK, u32 SHIFT)
+{
+        u32 return_value = 0;
+        u32 pmic_reg = 0;
+        u32 rdata = 0;
+
+        return_value = pwrap_read(RegNum, &rdata);
+        pmic_reg = rdata;
+        if (return_value != 0) {
+                printf("[PMIC]Reg[0x%x] pmic_wrap read data fail\n", RegNum);
+                return return_value;
+        }
+        /*pal_log_info("[pmic_config_interface] Reg[%x]=0x%x\n", RegNum, pmic_reg);*/
+
+        pmic_reg &= ~(MASK << SHIFT);
+        pmic_reg |= (val << SHIFT);
+
+        /* 2. mt_write_byte(RegNum, pmic_reg); */
+        return_value = pwrap_write(RegNum, pmic_reg);
+        if (return_value != 0) {
+                printf("[PMIC]Reg[0x%x] pmic_wrap write 0x%x fail\n", RegNum, pmic_reg);
+                return return_value;
+        }
+        /*pal_log_info("[pmic_config_interface] write Reg[%x]=0x%x\n", RegNum, pmic_reg);*/
+
+        return return_value;
+}
 
 /*
  * Setting kernel command line of boot device
@@ -128,20 +160,166 @@ SET_FDT_INIT_HOOK(update_mmc_dts, update_mmc_dts);
 // Section 1. Power Control -- Common for ASIC and FPGA
 //
 ////////////////////////////////////////////////////////////////////////////////
-#ifndef FPGA_PLATFORM
+u32 hwPowerOn(MSDC_POWER powerId, MSDC_POWER_VOLTAGE powerVolt)
+{
+	u32 ret;
+
+	switch (powerId) {
+		case MSDC_VEMC:
+			if (powerVolt == VOL_3000) {
+				pmic_config_interface(REG_VEMC_VOSEL, VEMC_VOSEL_3V, MASK_VEMC_VOSEL, SHIFT_VEMC_VOSEL);
+				if (EMMC_VOL_ACTUAL != VOL_3000) {
+					pmic_config_interface(REG_VEMC_VOSEL_CAL,
+						VEMC_VOSEL_CAL_mV(EMMC_VOL_ACTUAL - VOL_3000),
+						MASK_VEMC_VOSEL_CAL, SHIFT_VEMC_VOSEL_CAL);
+				}
+			} else if (powerVolt == VOL_3300) {
+				pmic_config_interface(REG_VEMC_VOSEL, VEMC_VOSEL_3V3, MASK_VEMC_VOSEL, SHIFT_VEMC_VOSEL);
+			} else {
+				video_printf("Not support to Set VEMC_3V3 power to %d\n", powerVolt);
+			}
+			pmic_config_interface(REG_VEMC_EN, 1, MASK_VEMC_EN, SHIFT_VEMC_EN);
+			break;
+
+		case MSDC_VMC:
+			if (powerVolt == VOL_3300 || powerVolt == VOL_3000)
+				pmic_config_interface(REG_VMC_VOSEL, VMC_VOSEL_3V, MASK_VMC_VOSEL, SHIFT_VMC_VOSEL);
+			else if (powerVolt == VOL_1800){
+                video_printf("Switching VMC to 1.8v\n");
+				pmic_config_interface(REG_VMC_VOSEL, VMC_VOSEL_1V8, MASK_VMC_VOSEL, SHIFT_VMC_VOSEL);
+            }
+			else
+				video_printf("Not support to Set VMC power to %d\n", powerVolt);
+
+			pmic_config_interface(REG_VMC_EN, 1, MASK_VMC_EN, SHIFT_VMC_EN);
+			break;
+
+		case MSDC_VMCH:
+			if (powerVolt == VOL_3000) {
+				pmic_config_interface(REG_VMCH_VOSEL, VMCH_VOSEL_3V, MASK_VMCH_VOSEL, SHIFT_VMCH_VOSEL);
+				if (SD_VOL_ACTUAL != VOL_3000) {
+					pmic_config_interface(REG_VMCH_VOSEL_CAL,
+						VMCH_VOSEL_CAL_mV(SD_VOL_ACTUAL - VOL_3000),
+						MASK_VMCH_VOSEL_CAL, SHIFT_VMCH_VOSEL_CAL);
+				}
+			} else if (powerVolt == VOL_3300) {
+				pmic_config_interface(REG_VMCH_VOSEL, VMCH_VOSEL_3V3, MASK_VMCH_VOSEL, SHIFT_VMCH_VOSEL);
+			} else {
+				video_printf("Not support to Set VMCH power to %d\n", powerVolt);
+			}
+			pmic_config_interface(REG_VMCH_EN, 1, MASK_VMCH_EN, SHIFT_VMCH_EN);
+			break;
+
+		default:
+			video_printf("Not support to Set %d power on\n", powerId);
+			break;
+	}
+
+	mdelay(100); /* requires before voltage stable */
+
+	return 0;
+}
+
+u32 hwPowerDown(MSDC_POWER powerId)
+{
+	switch (powerId) {
+		case MSDC_VEMC:
+			pmic_config_interface(REG_VEMC_EN, 0, MASK_VEMC_EN, SHIFT_VEMC_EN);
+			break;
+		case MSDC_VMC:
+			pmic_config_interface(REG_VMC_EN, 0, MASK_VMC_EN, SHIFT_VMC_EN);
+			break;
+		case MSDC_VMCH:
+			pmic_config_interface(REG_VMCH_EN, 0, MASK_VMCH_EN, SHIFT_VMCH_EN);
+			break;
+		default:
+			msdc_pr_err("Not support to Set %d power down\n", powerId);
+			break;
+	}
+	return 0;
+}
+
+static u32 msdc_ldo_power(u32 on, MSDC_POWER powerId, MSDC_POWER_VOLTAGE powerVolt, u32 *status)
+{
+	if (on) { // want to power on
+		if (*status == 0) {  // can power on
+			msdc_pr_info("msdc LDO<%d> power on<%d>\n", powerId, powerVolt);
+			hwPowerOn(powerId, powerVolt);
+			*status = powerVolt;
+		} else if (*status == powerVolt) {
+			msdc_pr_info("msdc LDO<%d><%d> power on again!\n", powerId, powerVolt);
+		} else { // for sd3.0 later
+			msdc_pr_info("msdc LDO<%d> change<%d>	to <%d>\n", powerId, *status, powerVolt);
+			hwPowerDown(powerId);
+			hwPowerOn(powerId, powerVolt);
+			*status = powerVolt;
+		}
+	} else {  // want to power off
+		if (*status != 0) {  // has been powerred on
+			msdc_pr_info("msdc LDO<%d> power off\n", powerId);
+			hwPowerDown(powerId);
+			*status = 0;
+		} else {
+			msdc_pr_info("LDO<%d>	not power on\n", powerId);
+		}
+	}
+
+	return 0;
+}
+
 void msdc_dump_ldo_sts(struct mmc_host *host)
 {
+    u32 ldo_en = 0, ldo_vol = 0;
+
+	pmic_read_interface(REG_VEMC_EN, &ldo_en, MASK_VEMC_EN,
+	                    SHIFT_VEMC_EN);
+	pmic_read_interface(REG_VEMC_VOSEL, &ldo_vol, MASK_VEMC_VOSEL,
+	                    SHIFT_VEMC_VOSEL);
+	msdc_pr_err(" VEMC_EN=0x%x, should:1b'1, "
+	       "VEMC_VOL=0x%x, should:3b'011(3.0V)\n",
+	       ldo_en, ldo_vol);
 }
-#endif
+
 
 void msdc_card_power(struct mmc_host *host, u32 on)
 {
-    /* power is default on */
+    switch (host->id) {
+		case 0:
+			msdc_ldo_power(on, MSDC_VEMC, VOL_3000, &g_msdc0_flash);
+			mdelay(10);
+			break;
+		case 1:
+			msdc_ldo_power(on, MSDC_VMCH, VOL_3000, &g_msdc1_flash);
+			mdelay(10);
+			break;
+		default:
+			break;
+	}
 }
 
 void msdc_host_power(struct mmc_host *host, u32 on, u32 level)
 {
-    /* power is default on */
+
+    u32 card_on = on;
+	if (host->id != 0) {
+		host->cur_pwr = level;
+	}
+	struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+	msdc_set_tdsel_wrap(host);
+	msdc_set_rdsel_wrap(host);
+	msdc_set_driving(host, &msdc_cap);
+
+	switch (host->id) {
+		case 0:
+			//no need change;
+			break;
+		case 1:
+			msdc_ldo_power(on, MSDC_VMC, level, &g_msdc1_io);
+			mdelay(10);
+			break;
+		default:
+			break;
+	}
 }
 
 void msdc_power(struct mmc_host *host, u8 mode)
@@ -158,6 +336,7 @@ void msdc_power(struct mmc_host *host, u8 mode)
         msdc_pin_config(host, MSDC_PIN_PULL_DOWN);
     }
 }
+
 
 /* MT2712EVB, GPIO67 to control SD VCCQ, output H --> 3.3V, output L --> 1.8V */
 /* set to 3.3V */
@@ -191,10 +370,10 @@ u32 *hclks_msdc_all[] = {
     hclks_msdc0,
     hclks_msdc1,
 };
-
+#define TOPCKGEN_BASE (0x10000000)
 void msdc_dump_clock_sts(struct mmc_host *host)
 {
-#if defined(MTK_MSDC_BRINGUP_DEBUG)
+
     dprintf(ALWAYS, "MSDC0 HCLK_MUX[0x1000_0070][25:24] = %d, pdn = %d,",
         /* mux at bits 25~24 */
         (MSDC_READ32(TOPCLK_BASE + 0x70) >> 24) & 3,
@@ -210,7 +389,7 @@ void msdc_dump_clock_sts(struct mmc_host *host)
         (MSDC_READ32(INFRACFG_AO_BASE + 0x94) >> 2) & 1,
         (MSDC_READ32(INFRACFG_AO_BASE + 0x94) >> 6) & 1,
         (MSDC_READ32(INFRACFG_AO_BASE + 0x94) >> 17) & 1);
-#endif
+
 }
 
 /* perloader will pre-set msdc pll and the mux channel of msdc pll */
@@ -224,11 +403,46 @@ void msdc_config_clksrc(struct mmc_host *host, int clksrc)
         host->pll_mux_clk = MSDC1_CLKSRC_DEFAULT;
         host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
     }
+    if (host->id == 0) {
+		MSDC_SET_FIELD((TOPCLK_BASE + 0x0140), 0x7 << 16, host->pll_mux_clk);
+	} else if (host->id == 1) {
+        video_printf("Going to init sd clks\n");
+        MSDC_SET_FIELD(TOPCLK_BASE + 0x80, 0x8000, 1);
+       // MSDC_SET_FIELD(INFRACFG_AO_BASE + 0x8C, 0x10, 1);
+        //MSDC_SET_FIELD(INFRACFG_AO_BASE + 0x8C, 0x10000, 1);
+		//MSDC_SET_FIELD((TOPCLK_BASE + 0x80), 0x7 << 24, host->pll_mux_clk);
+	} else if (host->id == 3) {
+		MSDC_SET_FIELD((TOPCLK_BASE + 0x0150), 0x7 << 8, host->pll_mux_clk);
+	}
+	MSDC_WRITE32(TOPCLK_BASE+0x04, 0x07FFFFFF);
+    host->pll_mux_clk = MSDC1_CLKSRC_DEFAULT;
+    host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
+
 }
 #endif
 
 void msdc_clock(struct mmc_host *host, int on)
 {
+    video_printf("MSDC clock called\n");
+    if (on) {
+		//INFRA_enable_clock(clk_id[host->id]);
+		if (host->id == 0) {
+			MSDC_SET_BIT32(MSDC0_CLOCK_UNGATE_REG, MSDC0_CLOCK_CG);
+            MSDC_SET_BIT32(MSDC0_CLOCK_UNGATE_REG, MSDC0_CLOCK_SRC_CG);
+		} else if (host->id == 1){
+			MSDC_SET_BIT32(MSDC1_CLOCK_UNGATE_REG, MSDC1_CLOCK_CG);
+            MSDC_SET_BIT32(MSDC1_CLOCK_UNGATE_REG, MSDC1_CLOCK_SRC_CG);
+        }
+	} else {
+		//INFRA_disable_clock(clk_id[host->id]);
+		if (host->id == 0) {
+			MSDC_SET_BIT32(MSDC0_CLOCK_GATE_REG, MSDC0_CLOCK_CG);
+            MSDC_SET_BIT32(MSDC0_CLOCK_GATE_REG, MSDC0_CLOCK_SRC_CG);
+		} else if (host->id == 1){
+			MSDC_SET_BIT32(MSDC1_CLOCK_GATE_REG, MSDC1_CLOCK_CG);
+            MSDC_SET_BIT32(MSDC1_CLOCK_GATE_REG, MSDC1_CLOCK_SRC_CG);
+        }
+	}
     /* clock is default on */
     msdc_dump_clock_sts(host);
 }
@@ -238,7 +452,6 @@ void msdc_clock(struct mmc_host *host, int on)
 /**************************************************************/
 void msdc_dump_padctl_by_id(u32 id)
 {
-#if defined(MTK_MSDC_BRINGUP_DEBUG)
     if (id == 0) {
         dprintf(ALWAYS, "MSDC0 MODE6[%x] = 0x%X\tshould: 0x11??????\n",
             MSDC0_GPIO_MODE6, MSDC_READ32(MSDC0_GPIO_MODE6));
@@ -311,7 +524,6 @@ void msdc_dump_padctl_by_id(u32 id)
         dprintf(ALWAYS, "MSDC1 R1 [%lx] = 0x%X\tshould: 0x??????3F\n",
             MSDC1_GPIO_R1, MSDC_READ32(MSDC1_GPIO_R1));
     }
-#endif
 }
 
 void msdc_set_pin_mode(struct mmc_host *host)
@@ -501,50 +713,38 @@ void msdc_set_driving_by_id(u32 id, struct msdc_cust *msdc_cap)
 void msdc_pin_config_by_id(u32 id, u32 mode)
 {
 #ifndef FPGA_PLATFORM
-    if (id == 0) {
-        /* 1. don't pull CLK high;
-         * 2. Don't toggle RST to prevent from entering boot mode
-         */
-        if (mode == MSDC_PIN_PULL_NONE) {
-            /* Switch MSDC0_* to no ohm PU */
-            MSDC_SET_FIELD(MSDC0_GPIO_PUPD0, MSDC0_PUPD_ALL_MASK, 0x0);
-            MSDC_SET_FIELD(MSDC0_GPIO_R0, MSDC0_R0_ALL_MASK, 0x0);
-            MSDC_SET_FIELD(MSDC0_GPIO_R1, MSDC0_R1_ALL_MASK, 0x0);
-        } else if (mode == MSDC_PIN_PULL_DOWN) {
-            /* Switch MSDC0_* to 50K ohm PD */
-            MSDC_SET_FIELD(MSDC0_GPIO_PUPD0, MSDC0_PUPD_ALL_MASK, 0x7FF);
-            MSDC_SET_FIELD(MSDC0_GPIO_R0, MSDC0_R0_ALL_MASK, 0x0);
-            MSDC_SET_FIELD(MSDC0_GPIO_R1, MSDC0_R1_ALL_MASK, 0x7FF);
-        } else if (mode == MSDC_PIN_PULL_UP) {
-            /*
-             * Switch MSDC0_CLK to 50K ohm PD,
-             * MSDC0_CMD/MSDC0_DAT* to 10K ohm PU,
-             * MSDC0_DSL to 50K ohm PD
-             */
-            MSDC_SET_FIELD(MSDC0_GPIO_PUPD0, MSDC0_PUPD_ALL_MASK, 0x401);
-            MSDC_SET_FIELD(MSDC0_GPIO_R0, MSDC0_R0_ALL_MASK, 0xBFE);
-            MSDC_SET_FIELD(MSDC0_GPIO_R1, MSDC0_R1_ALL_MASK, 0x401);
-        }
-    } else if (id == 1) {
-        if (mode == MSDC_PIN_PULL_NONE) {
-            /* Switch MSDC1_* to no ohm PU */
-            MSDC_SET_FIELD(MSDC1_GPIO_PUPD0, MSDC1_PUPD_ALL_MASK, 0x0);
-            MSDC_SET_FIELD(MSDC1_GPIO_R0, MSDC1_R0_ALL_MASK, 0x0);
-            MSDC_SET_FIELD(MSDC1_GPIO_R1, MSDC1_R1_ALL_MASK, 0x0);
-        } else if (mode == MSDC_PIN_PULL_DOWN) {
-            /* Switch MSDC1_* to 50K ohm PD */
-            MSDC_SET_FIELD(MSDC1_GPIO_PUPD0, MSDC1_PUPD_ALL_MASK, 0x3F);
-            MSDC_SET_FIELD(MSDC1_GPIO_R0, MSDC1_R0_ALL_MASK, 0x0);
-            MSDC_SET_FIELD(MSDC1_GPIO_R1, MSDC1_R1_ALL_MASK, 0x3F);
-        } else if (mode == MSDC_PIN_PULL_UP) {
-            /* Switch MSDC1_CLK to 50K ohm PD,
-             * MSDC1_CMD/MSDC1_DAT* to 50K ohm PU
-             */
-            MSDC_SET_FIELD(MSDC1_GPIO_PUPD0, MSDC1_PUPD_ALL_MASK, 0x1);
-            MSDC_SET_FIELD(MSDC1_GPIO_R0, MSDC1_R0_ALL_MASK, 0x0);
-            MSDC_SET_FIELD(MSDC1_GPIO_R1, MSDC1_R1_ALL_MASK, 0x3F);
-        }
-    }
+mt_set_gpio_mode(GPIO72, 1); // GPIO mode 0
+mt_set_gpio_mode(GPIO73, 1); // GPIO mode 0
+mt_set_gpio_mode(GPIO74, 1); // GPIO mode 0
+mt_set_gpio_mode(GPIO75, 1); // GPIO mode 0
+mt_set_gpio_mode(GPIO76, 1); // GPIO mode 0
+
+mt_set_gpio_mode(GPIO71, 1); // GPIO mode 0
+
+mt_set_gpio_drv(GPIO72, GPIO_DRV3);
+mt_set_gpio_drv(GPIO73, GPIO_DRV3);
+mt_set_gpio_drv(GPIO74, GPIO_DRV3);
+mt_set_gpio_drv(GPIO75, GPIO_DRV3);
+mt_set_gpio_drv(GPIO76, GPIO_DRV3);
+
+mt_set_gpio_drv(GPIO71, GPIO_DRV3);
+
+mt_get_gpio_in(GPIO72);
+mt_get_gpio_in(GPIO73);
+mt_get_gpio_in(GPIO74);
+mt_get_gpio_in(GPIO75);
+mt_get_gpio_in(GPIO76);
+
+//mt_get_gpio_out(GPIO71);
+
+    video_printf("Sd card pull enable:\n GPIO73: %d; GPIO74: %d; GPIO75: %d; GPIO76: %d; GPIO72: %d; GPIO71: %d\n", mt_set_gpio_pull_enable(GPIO73, GPIO_PULL_ENABLE), mt_set_gpio_pull_enable(GPIO74, GPIO_PULL_ENABLE), mt_set_gpio_pull_enable(GPIO75, GPIO_PULL_ENABLE), mt_set_gpio_pull_enable(GPIO76, GPIO_PULL_ENABLE), mt_set_gpio_pull_enable(GPIO72, GPIO_PULL_ENABLE), mt_set_gpio_pull_enable(GPIO71, GPIO_PULL_ENABLE));
+
+    video_printf("Sd card pupd enable status:\n GPIO73: %d; GPIO74: %d; GPIO75: %d; GPIO76: %d; GPIO72: %d; GPIO71: %d\n", mt_get_gpio_pull_enable(GPIO73), mt_get_gpio_pull_enable(GPIO74), mt_get_gpio_pull_enable(GPIO75), mt_get_gpio_pull_enable(GPIO76), mt_get_gpio_pull_enable(GPIO72), mt_get_gpio_pull_enable(GPIO71));
+
+    video_printf("Sd card pull select:\n GPIO73: %d; GPIO74: %d; GPIO75: %d; GPIO76: %d; GPIO72: %d; GPIO71: %d\n", mt_set_gpio_pull_select(GPIO73, GPIO_PULL_UP), mt_set_gpio_pull_select(GPIO74, GPIO_PULL_UP),mt_set_gpio_pull_select(GPIO75, GPIO_PULL_UP),mt_set_gpio_pull_select(GPIO76, GPIO_PULL_UP),mt_set_gpio_pull_select(GPIO72, GPIO_PULL_UP),mt_set_gpio_pull_select(GPIO71, GPIO_PULL_DOWN));
+
+    video_printf("Sd card pupd status:\n GPIO73: %d; GPIO74: %d; GPIO75: %d; GPIO76: %d; GPIO72: %d; GPIO71: %d;\n", mt_get_gpio_pull_select(GPIO73), mt_get_gpio_pull_select(GPIO74), mt_get_gpio_pull_select(GPIO75), mt_get_gpio_pull_select(GPIO76), mt_get_gpio_pull_select(GPIO72),  mt_get_gpio_pull_select(GPIO71));
+
 #endif
 }
 
@@ -571,9 +771,10 @@ void msdc_set_rdsel_wrap(struct mmc_host *host)
 void msdc_gpio_and_pad_init(struct mmc_host *host)
 {
     struct msdc_cust msdc_cap = get_msdc_capability(host->id);
-
+    msdc_ldo_power(1, MSDC_VMCH, VOL_3000, &g_msdc1_flash);
+    msdc_ldo_power(1, MSDC_VMC, VOL_3000, &g_msdc1_flash);
     /* set smt enable */
-    msdc_set_smt(host, 1);
+//    msdc_set_smt(host, 1);
 
     /* set pull enable */
     msdc_pin_config(host, MSDC_PIN_PULL_UP);
@@ -582,14 +783,14 @@ void msdc_gpio_and_pad_init(struct mmc_host *host)
     msdc_set_pin_mode(host);
 
     /* set ies enable */
-    msdc_set_ies(host, 1);
+  //  msdc_set_ies(host, 1);
 
     /* set driving */
-    msdc_set_driving(host, &msdc_cap);
+    //msdc_set_driving(host, &msdc_cap);
 
     /* set tdsel and rdsel */
-    msdc_set_tdsel_wrap(host);
-    msdc_set_rdsel_wrap(host);
+   // msdc_set_tdsel_wrap(host);
+   // msdc_set_rdsel_wrap(host);
 
     msdc_dump_padctl_by_id(host->id);
 }

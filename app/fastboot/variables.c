@@ -67,6 +67,8 @@ __WEAK const char **get_fastboot_image_list(void)
        "super",
        "system",
        "vbmeta",
+       "vbmeta_system",
+       "vbmeta_vendor",
        "userdata",
        NULL
     };

@@ -1,0 +1,825 @@
+external/lib/lwip/include/ipv4/lwip/ip_addr.h: * from host- to network-order. */
+external/lib/lwip/include/lwip/opt.h:/** DNS_LOCAL_HOSTLIST: Implements a local host-to-address list. If enabled,
+external/lib/lwip/include/lwip/opt.h:/** If this is turned on, the local host-list can be dynamically changed
+external/lib/lwip/include/lwip/dns.h:/** struct used for local host-list */
+external/lib/lwip/core/def.c: * Convert an u16_t from host- to network byte order.
+external/lib/lwip/core/def.c: * Convert an u32_t from host- to network byte order.
+external/lib/lwip/core/dns.c:/** Local host-list. For hostnames in this list, no
+external/lib/lwip/core/dns.c: * Scans the local host-list for a hostname.
+external/lib/lwip/core/dns.c: * @param hostname Hostname to look for in the local host-list
+external/lib/lwip/core/dns.c: * @return The first IP address for the hostname in the local host-list or
+external/lib/lwip/core/dns.c:/** Remove all entries from the local host-list for a specific hostname
+external/lib/lwip/core/dns.c: *                 host-list
+external/lib/lwip/core/dns.c: * @param addr address for which entries shall be removed from the local host-list
+external/lib/lwip/core/dns.c: * Add a hostname/IP address pair to the local host-list.
+external/lib/libavb/avb_rsa.c:  uint32_t* n;      /* modulus as array (host-byte order) */
+external/lib/libavb/avb_rsa.c:  uint32_t* rr;     /* R^2 as array (host-byte order) */
+external/platform/stellaris/ti-driverlib/driverlib/epi.c://! - \b EPI_MODE_HB8 - use with host-bus 8-bit interface
+external/platform/stellaris/ti-driverlib/driverlib/epi.c://! - \b EPI_MODE_HB16 - use with host-bus 16-bit interface
+platform/mediatek/mt6855/mmc/msdc_io.c:        msdc_host_power(host, 1, host->cur_pwr);
+platform/mediatek/mt6855/mmc/msdc_io.c:        msdc_host_power(host, 0, host->cur_pwr);
+platform/mediatek/mt6855/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, clksrc);
+platform/mediatek/mt6855/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6855/mmc/msdc_io.c:        host->pll_mux_clk = MSDC0_CLKSRC_DEFAULT;
+platform/mediatek/mt6855/mmc/msdc_io.c:        host->src_clk = msdc_get_hclk(host->id, MSDC0_CLKSRC_DEFAULT);
+platform/mediatek/mt6855/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt6855/mmc/msdc_io.c:        host->pll_mux_clk = MSDC1_CLKSRC_DEFAULT;
+platform/mediatek/mt6855/mmc/msdc_io.c:        host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
+platform/mediatek/mt6855/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6855/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt6855/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6855/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6855/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6855/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6855/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6855/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6855/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6855/mmc/msdc_io.c:    msdc_dump_padctl_by_id(host->id);
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_set_driving_by_id(host->id, msdc_cap)
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_set_ies_by_id(host->id, set_ies)
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_set_sr_by_id(host->id, clk, cmd, dat, rst, ds)
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_set_smt_by_id(host->id, set_smt)
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_set_tdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_set_rdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_get_tdsel_by_id(host->id, value)
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_get_rdsel_by_id(host->id, value)
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_dump_padctl_by_id(host->id)
+platform/mediatek/mt6855/mmc/msdc_io.h:    msdc_pin_config_by_id(host->id, mode)
+platform/mediatek/mt6833/mmc/msdc_io.c:        msdc_host_power(host, 1, host->cur_pwr);
+platform/mediatek/mt6833/mmc/msdc_io.c:        msdc_host_power(host, 0, host->cur_pwr);
+platform/mediatek/mt6833/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, clksrc);
+platform/mediatek/mt6833/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6833/mmc/msdc_io.c:        host->pll_mux_clk = MSDC0_CLKSRC_DEFAULT;
+platform/mediatek/mt6833/mmc/msdc_io.c:        host->src_clk = msdc_get_hclk(host->id, MSDC0_CLKSRC_DEFAULT);
+platform/mediatek/mt6833/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt6833/mmc/msdc_io.c:        host->pll_mux_clk = MSDC1_CLKSRC_DEFAULT;
+platform/mediatek/mt6833/mmc/msdc_io.c:        host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
+platform/mediatek/mt6833/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6833/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt6833/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6833/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6833/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6833/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6833/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6833/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6833/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6833/mmc/msdc_io.c:    msdc_dump_padctl_by_id(host->id);
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_set_driving_by_id(host->id, msdc_cap)
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_set_ies_by_id(host->id, set_ies)
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_set_sr_by_id(host->id, clk, cmd, dat, rst, ds)
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_set_smt_by_id(host->id, set_smt)
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_set_tdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_set_rdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_get_tdsel_by_id(host->id, value)
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_get_rdsel_by_id(host->id, value)
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_dump_padctl_by_id(host->id)
+platform/mediatek/mt6833/mmc/msdc_io.h:    msdc_pin_config_by_id(host->id, mode)
+platform/mediatek/mt6983/mmc/msdc_io.c:    dprintf(INFO, "[SD%d] Turn %s card power\n", host->id, on ? "on" : "off");
+platform/mediatek/mt6983/mmc/msdc_io.c:        msdc_host_power(host, 1, host->cur_pwr);
+platform/mediatek/mt6983/mmc/msdc_io.c:        msdc_host_power(host, 0, host->cur_pwr);
+platform/mediatek/mt6983/mmc/msdc_io.c:    host->pll_mux_clk = MSDC0_CLKSRC_DEFAULT;
+platform/mediatek/mt6983/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, MSDC0_CLKSRC_DEFAULT);
+platform/mediatek/mt6983/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, clksrc);
+platform/mediatek/mt6983/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6983/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6983/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6983/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6983/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6983/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6983/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6983/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6983/mmc/msdc_io.c:    msdc_dump_padctl_by_id(host->id);
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_set_driving_by_id(host->id, msdc_cap)
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_set_ies_by_id(host->id, set_ies)
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_set_sr_by_id(host->id, clk, cmd, dat, rst, ds)
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_set_smt_by_id(host->id, set_smt)
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_set_tdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_set_rdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_get_tdsel_by_id(host->id, value)
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_get_rdsel_by_id(host->id, value)
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_dump_padctl_by_id(host->id)
+platform/mediatek/mt6983/mmc/msdc_io.h:    msdc_pin_config_by_id(host->id, mode)
+platform/mediatek/mt8195/mmc/msdc_io.c:    dprintf(INFO, "[SD%d] Turn %s card power\n", host->id, on ? "on" : "off");
+platform/mediatek/mt8195/mmc/msdc_io.c:    switch (host->id) {
+platform/mediatek/mt8195/mmc/msdc_io.c:    dprintf(INFO, "[SD%d] Turn %s host power\n", host->id, on ? "on" : "off");
+platform/mediatek/mt8195/mmc/msdc_io.c:    switch (host->id) {
+platform/mediatek/mt8195/mmc/msdc_io.c:    dprintf(INFO, "[SD%d] Turn %s card power\n", host->id, on ? "on" : "off");
+platform/mediatek/mt8195/mmc/msdc_io.c:        msdc_host_power(host, 1, host->cur_pwr);
+platform/mediatek/mt8195/mmc/msdc_io.c:        msdc_host_power(host, 0, host->cur_pwr);
+platform/mediatek/mt8195/mmc/msdc_io.c:    host->pll_mux_clk = MSDC0_CLKSRC_DEFAULT;
+platform/mediatek/mt8195/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, MSDC0_CLKSRC_DEFAULT);
+platform/mediatek/mt8195/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, clksrc);
+platform/mediatek/mt8195/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt8195/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt8195/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt8195/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt8195/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt8195/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt8195/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt8195/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt8195/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt8195/mmc/msdc_io.c:    msdc_set_driving(host, &msdc_cap, (host->cur_pwr == VOL_1800));
+platform/mediatek/mt8195/mmc/msdc_io.c:    //msdc_dump_padctl_by_id(host->id);
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_set_driving_by_id(host->id, msdc_cap, sd_18)
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_set_ies_by_id(host->id, set_ies)
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_set_sr_by_id(host->id, clk, cmd, dat, rst, ds)
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_set_smt_by_id(host->id, set_smt)
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_set_tdsel_by_id(host->id, flag, value)
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_set_rdsel_by_id(host->id, flag, value)
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_get_tdsel_by_id(host->id, value)
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_get_rdsel_by_id(host->id, value)
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_dump_padctl_by_id(host->id)
+platform/mediatek/mt8195/mmc/msdc_io.h:    msdc_pin_config_by_id(host->id, mode)
+platform/mediatek/mt6890/mmc/msdc_io.c:    dprintf(INFO, "[SD%d] Turn %s card power\n", host->id, on ? "on" : "off");
+platform/mediatek/mt6890/mmc/msdc_io.c:        msdc_host_power(host, 1, host->cur_pwr);
+platform/mediatek/mt6890/mmc/msdc_io.c:        msdc_host_power(host, 0, host->cur_pwr);
+platform/mediatek/mt6890/mmc/msdc_io.c:    host->pll_mux_clk = MSDC0_CLKSRC_DEFAULT;
+platform/mediatek/mt6890/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, MSDC0_CLKSRC_DEFAULT);
+platform/mediatek/mt6890/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, clksrc);
+platform/mediatek/mt6890/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6890/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6890/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6890/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6890/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6890/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6890/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6890/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6890/mmc/msdc_io.c:    msdc_set_driving(host, &msdc_cap, (host->cur_pwr == VOL_1800));
+platform/mediatek/mt6890/mmc/msdc_io.c:    msdc_dump_padctl_by_id(host->id);
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_set_driving_by_id(host->id, msdc_cap, sd_18)
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_set_ies_by_id(host->id, set_ies)
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_set_sr_by_id(host->id, clk, cmd, dat, rst, ds)
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_set_smt_by_id(host->id, set_smt)
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_set_tdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_set_rdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_get_tdsel_by_id(host->id, value)
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_get_rdsel_by_id(host->id, value)
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_dump_padctl_by_id(host->id)
+platform/mediatek/mt6890/mmc/msdc_io.h:    msdc_pin_config_by_id(host->id, mode)
+platform/mediatek/mt6879/mmc/msdc_io.c:    dprintf(INFO, "[SD%d] Turn %s card power\n", host->id, on ? "on" : "off");
+platform/mediatek/mt6879/mmc/msdc_io.c:        msdc_host_power(host, 1, host->cur_pwr);
+platform/mediatek/mt6879/mmc/msdc_io.c:        msdc_host_power(host, 0, host->cur_pwr);
+platform/mediatek/mt6879/mmc/msdc_io.c:    host->pll_mux_clk = MSDC0_CLKSRC_DEFAULT;
+platform/mediatek/mt6879/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, MSDC0_CLKSRC_DEFAULT);
+platform/mediatek/mt6879/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, clksrc);
+platform/mediatek/mt6879/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6879/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6879/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6879/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6879/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6879/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6879/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6879/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6879/mmc/msdc_io.c:    msdc_set_driving(host, &msdc_cap, (host->cur_pwr == VOL_1800));
+platform/mediatek/mt6879/mmc/msdc_io.c:    msdc_dump_padctl_by_id(host->id);
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_set_driving_by_id(host->id, msdc_cap, sd_18)
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_set_ies_by_id(host->id, set_ies)
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_set_sr_by_id(host->id, clk, cmd, dat, rst, ds)
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_set_smt_by_id(host->id, set_smt)
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_set_tdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_set_rdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_get_tdsel_by_id(host->id, value)
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_get_rdsel_by_id(host->id, value)
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_dump_padctl_by_id(host->id)
+platform/mediatek/mt6879/mmc/msdc_io.h:    msdc_pin_config_by_id(host->id, mode)
+platform/mediatek/mt6895/mmc/msdc_io.c:        msdc_host_power(host, 1, host->cur_pwr);
+platform/mediatek/mt6895/mmc/msdc_io.c:        msdc_host_power(host, 0, host->cur_pwr);
+platform/mediatek/mt6895/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, clksrc);
+platform/mediatek/mt6895/mmc/msdc_io.c:    host->pll_mux_clk = MSDC1_CLKSRC_DEFAULT;
+platform/mediatek/mt6895/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
+platform/mediatek/mt6895/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6895/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6895/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6895/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6895/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6895/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6895/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6895/mmc/msdc_io.c:    msdc_dump_padctl_by_id(host->id);
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_set_driving_by_id(host->id, msdc_cap)
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_set_ies_by_id(host->id, set_ies)
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_set_sr_by_id(host->id, clk, cmd, dat, rst, ds)
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_set_smt_by_id(host->id, set_smt)
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_set_tdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_set_rdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_get_tdsel_by_id(host->id, value)
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_get_rdsel_by_id(host->id, value)
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_dump_padctl_by_id(host->id)
+platform/mediatek/mt6895/mmc/msdc_io.h:    msdc_pin_config_by_id(host->id, mode)
+platform/mediatek/mt6893/mmc/msdc_io.c:    if (host->id == 1) {
+platform/mediatek/mt6893/mmc/msdc_io.c:    dprintf(INFO, "[SD%d] Turn %s card power\n", host->id, on ? "on" : "off");
+platform/mediatek/mt6893/mmc/msdc_io.c:    switch (host->id) {
+platform/mediatek/mt6893/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6893/mmc/msdc_io.c:    if (host->id != 0)
+platform/mediatek/mt6893/mmc/msdc_io.c:        host->cur_pwr = level;
+platform/mediatek/mt6893/mmc/msdc_io.c:    dprintf(INFO, "[SD%d] Turn %s host power\n", host->id, on ? "on" : "off");
+platform/mediatek/mt6893/mmc/msdc_io.c:    switch (host->id) {
+platform/mediatek/mt6893/mmc/msdc_io.c:        msdc_host_power(host, 1, host->cur_pwr);
+platform/mediatek/mt6893/mmc/msdc_io.c:        msdc_host_power(host, 0, host->cur_pwr);
+platform/mediatek/mt6893/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6893/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt6893/mmc/msdc_io.c:        if (host->id == 1) {
+platform/mediatek/mt6893/mmc/msdc_io.c:        if (host->id == 1) {
+platform/mediatek/mt6893/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6893/mmc/msdc_io.c:        host->pll_mux_clk = MSDC0_CLKSRC_DEFAULT;
+platform/mediatek/mt6893/mmc/msdc_io.c:        host->src_clk = msdc_get_hclk(host->id, MSDC0_CLKSRC_DEFAULT);
+platform/mediatek/mt6893/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt6893/mmc/msdc_io.c:        host->pll_mux_clk = MSDC1_CLKSRC_DEFAULT;
+platform/mediatek/mt6893/mmc/msdc_io.c:        host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
+platform/mediatek/mt6893/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, clksrc);
+platform/mediatek/mt6893/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6893/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt6893/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6893/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6893/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6893/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6893/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6893/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6893/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6893/mmc/msdc_io.c:    msdc_dump_padctl_by_id(host->id);
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_set_driving_by_id(host->id, msdc_cap)
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_set_ies_by_id(host->id, set_ies)
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_set_sr_by_id(host->id, clk, cmd, dat, rst, ds)
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_set_smt_by_id(host->id, set_smt)
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_set_tdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_set_rdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_get_tdsel_by_id(host->id, value)
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_get_rdsel_by_id(host->id, value)
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_dump_padctl_by_id(host->id)
+platform/mediatek/mt6893/mmc/msdc_io.h:    msdc_pin_config_by_id(host->id, mode)
+platform/mediatek/common/mmc/include/msdc.h:#define REG_OP(x)                 ((uint32_t *)((uintptr_t)host->base_top + OFFSET_##x))
+platform/mediatek/common/mmc/mmc_core.c:            dprintf(CRITICAL, "[SD%d] Fail to send status %d\n", host->id, err);
+platform/mediatek/common/mmc/mmc_core.c:            dprintf(CRITICAL, "[SD%d] switch error. arg(0x%x)\n", host->id, cmd.arg);
+platform/mediatek/common/mmc/mmc_core.c:        host->curr_part = value & 0x7;
+platform/mediatek/common/mmc/mmc_core.c:    u32 caps = card->host->caps;
+platform/mediatek/common/mmc/mmc_core.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/mmc_core.c:        host->blklen = 512;
+platform/mediatek/common/mmc/mmc_core.c:    if (host->curr_part == dev->part_id)
+platform/mediatek/common/mmc/mmc_core.c:    ocr &= host->ocr_avail;
+platform/mediatek/common/mmc/mmc_core.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/mmc_core.c:                __func__, host->id, status);
+platform/mediatek/common/mmc/mmc_core.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/mmc_core.c:    host->blklen = 8;
+platform/mediatek/common/mmc/mmc_core.c:    dprintf(INFO, "[SD%d] SCR: %x %x (raw)\n", host->id,
+platform/mediatek/common/mmc/mmc_core.c:    dprintf(INFO, "[SD%d] SCR: %x %x (ntohl)\n", host->id, card->raw_scr[0], card->raw_scr[1]);
+platform/mediatek/common/mmc/mmc_core.c:            host->id, unstuff_bits(resp, 60, 4));
+platform/mediatek/common/mmc/mmc_core.c:        host->id, scr->sda_vsn, scr->sda_vsn3, scr->bus_widths);
+platform/mediatek/common/mmc/mmc_core.c:        host->id, scr->security, scr->ex_security, scr->cmd_support,
+platform/mediatek/common/mmc/mmc_core.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/mmc_core.c:        host->blklen = 64;
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: Default/SDR12\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: HS/SDR25\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: DDR50\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: SDR50\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: SDR104\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: Type-B Drv\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: Type-A Drv\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: Type-C Drv\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: Type-D Drv\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: 200mA current limit\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: 400mA current limit\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: 600mA current limit\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Support: 800mA current limit\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(CRITICAL, "[SD%d] HS mode not supported!\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Switch to HS mode!\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:            host->id, smode[mode]);
+platform/mediatek/common/mmc/mmc_core.c:            host->id, smode[mode]);
+platform/mediatek/common/mmc/mmc_core.c:            host->id, type[val]);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(INFO, "[SD%d] Switch to UHS-1 %s drv!\n", host->id, type[val]);
+platform/mediatek/common/mmc/mmc_core.c:            host->id, curr[val]);
+platform/mediatek/common/mmc/mmc_core.c:            host->id, curr[val]);
+platform/mediatek/common/mmc/mmc_core.c:    if (hz >= host->f_max)
+platform/mediatek/common/mmc/mmc_core.c:        hz = host->f_max;
+platform/mediatek/common/mmc/mmc_core.c:    else if (hz < host->f_min)
+platform/mediatek/common/mmc/mmc_core.c:        hz = host->f_min;
+platform/mediatek/common/mmc/mmc_core.c:        if ((width == HOST_BUS_WIDTH_4) && (host->caps & MMC_CAP_4_BIT_DATA)) {
+platform/mediatek/common/mmc/mmc_core.c:            if (host->caps & MMC_CAP_8_BIT_DATA)
+platform/mediatek/common/mmc/mmc_core.c:            if (host->caps & MMC_CAP_4_BIT_DATA)
+platform/mediatek/common/mmc/mmc_core.c:    u16 data_len = host->caps &  MMC_CAP_8_BIT_DATA ? 128 : 64;
+platform/mediatek/common/mmc/mmc_core.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/mmc_core.c:    host->blklen = data_len;
+platform/mediatek/common/mmc/mmc_core.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/mmc_core.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/mmc_core.c:    u32 blksz = host->blklen;
+platform/mediatek/common/mmc/mmc_core.c:            err = host->blk_read(host, (uchar *)dst, src, blkcnt);
+platform/mediatek/common/mmc/mmc_core.c:            if (err && (host->cur_bus_clk > (host->f_max >> 4)))
+platform/mediatek/common/mmc/mmc_core.c:                mmc_set_clock(host, card->state, host->cur_bus_clk >> 1);
+platform/mediatek/common/mmc/mmc_core.c:    u32 blksz = host->blklen;
+platform/mediatek/common/mmc/mmc_core.c:            err = host->blk_write(host, dst, (uchar *)src, blkcnt);
+platform/mediatek/common/mmc/mmc_core.c:            if (err && (host->cur_bus_clk > (host->f_max >> 4)))
+platform/mediatek/common/mmc/mmc_core.c:                mmc_set_clock(host, card->state, host->cur_bus_clk >> 1);
+platform/mediatek/common/mmc/mmc_core.c:    u32 maxblks = host->max_phys_segs;
+platform/mediatek/common/mmc/mmc_core.c:    mutex_acquire(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    mutex_release(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    u32 maxblks = host->max_phys_segs;
+platform/mediatek/common/mmc/mmc_core.c:    mutex_acquire(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    mutex_release(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    mutex_acquire(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    mutex_release(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    mutex_acquire(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    mutex_release(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    mutex_acquire(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    mutex_release(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    ocr = host->ocr = mmc_select_voltage(host, ocr);
+platform/mediatek/common/mmc/mmc_core.c:    if (!host->ocr) {
+platform/mediatek/common/mmc/mmc_core.c:        if (host->caps & MMC_CAP_SD_UHS1)
+platform/mediatek/common/mmc/mmc_core.c:    u32 ocr = host->ocr;
+platform/mediatek/common/mmc/mmc_core.c:            if (host->caps & MMC_CAP_SD_UHS1)
+platform/mediatek/common/mmc/mmc_core.c:            host->id, ocr, card->ocr, s18a);
+platform/mediatek/common/mmc/mmc_core.c:                dprintf(CRITICAL, "[SD%d] Fail in SWITCH_VOLT cmd\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(CRITICAL, "[SD%d] Fail in SEND_CID cmd\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(CRITICAL, "[SD%d] Fail in SEND_RCA cmd\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(CRITICAL, "[SD%d] Fail in SEND_CSD cmd\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(CRITICAL, "[SD%d] Fail in select card cmd\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:            dprintf(CRITICAL, "[SD%d] Fail in SEND_SCR cmd\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:                if (s18a && (host->caps & MMC_CAP_SD_UHS1)) {
+platform/mediatek/common/mmc/mmc_core.c:                    freq = MIN(host->f_max, card->sw_caps.hs_max_dtr);
+platform/mediatek/common/mmc/mmc_core.c:                        if (card->sw_caps.ddr && (host->caps & MMC_CAP_DDR))
+platform/mediatek/common/mmc/mmc_core.c:                if (host->caps & MMC_CAP_SD_HIGHSPEED) {
+platform/mediatek/common/mmc/mmc_core.c:            dprintf(CRITICAL, "[SD%d] Fail in SEND_EXT_CSD cmd\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        if (host->caps & MMC_CAP_EMMC_HS200 && host->caps & MMC_CAP_EMMC_HS400) {
+platform/mediatek/common/mmc/mmc_core.c:        if ((card->ext_csd.hs_max_dtr != 0) && (host->caps & MMC_CAP_MMC_HIGHSPEED)) {
+platform/mediatek/common/mmc/mmc_core.c:            mmc_set_clock(host, 0, host->f_min);
+platform/mediatek/common/mmc/mmc_core.c:                dprintf(ALWAYS, "[SD%d] Switched to High-Speed mode!\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:        host->blklen = MMC_BLOCK_SIZE;
+platform/mediatek/common/mmc/mmc_core.c:            host->id, ((card->nblks / 1024) * card->blklen) / 1024, card->maxhz / 1000,
+platform/mediatek/common/mmc/mmc_core.c:    dprintf(ALWAYS, "[SD%d] %s Initialized\n", host->id,
+platform/mediatek/common/mmc/mmc_core.c:        host->id ? "SDCard" : "eMMC");
+platform/mediatek/common/mmc/mmc_core.c:        dprintf(CRITICAL, "[SD%d] Fail in GO_IDLE_STATE cmd\n", host->id);
+platform/mediatek/common/mmc/mmc_core.c:    if (host->id)
+platform/mediatek/common/mmc/mmc_core.c:        mmc_send_if_cond(host, host->ocr_avail);
+platform/mediatek/common/mmc/mmc_core.c:    if (host->id) {
+platform/mediatek/common/mmc/mmc_core.c:    host->card = card;
+platform/mediatek/common/mmc/mmc_core.c:    host->card = card;
+platform/mediatek/common/mmc/mmc_core.c:    mutex_init(&host->lock);
+platform/mediatek/common/mmc/mmc_core.c:    host->id = MMC_HOST_ID;
+platform/mediatek/common/mmc/mmc_core.c:    host->cur_pwr = VOL_1800;
+platform/mediatek/common/mmc/mmc_core.c:    host->id = id;
+platform/mediatek/common/mmc/mmc_core.c:    host->cur_pwr = VOL_3000;
+platform/mediatek/common/mmc/mmc_core.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/mmc_rpmb.c:    u32 blksz = host->blklen;
+platform/mediatek/common/mmc/mmc_rpmb.c:    maxblks = host->max_phys_segs;
+platform/mediatek/common/mmc/mmc_rpmb.c:    if (host->curr_part != EXT_CSD_PART_CFG_RPMB_PART) {
+platform/mediatek/common/mmc/mmc_rpmb.c:    if (host->curr_part != EXT_CSD_PART_CFG_RPMB_PART) {
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    if (host->cur_bus_clk == 0) {
+platform/mediatek/common/mmc/msdc.c:        clk_ns  = 1000000000UL / host->cur_bus_clk;
+platform/mediatek/common/mmc/msdc.c:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+platform/mediatek/common/mmc/msdc.c:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+platform/mediatek/common/mmc/msdc.c:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+platform/mediatek/common/mmc/msdc.c:        host->max_phys_segs = 0xffff;
+platform/mediatek/common/mmc/msdc.c:        host->max_phys_segs = (UINT_MAX & ~511) >> MMC_BLOCK_BITS_SHFT;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    msdc_dump_padctl_by_id(host->id);
+platform/mediatek/common/mmc/msdc.c:    cmd.arg     = host->card->rca << 16;
+platform/mediatek/common/mmc/msdc.c:        addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    MSDC_WRITE32(MSDC_INT, g_int_status & host->intr_mask);
+platform/mediatek/common/mmc/msdc.c:    host->intr_mask = 0;
+platform/mediatek/common/mmc/msdc.c:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+platform/mediatek/common/mmc/msdc.c:    addr_t base   = host->base;
+platform/mediatek/common/mmc/msdc.c:             msdc_rsp[rsptyp] << 7 | host->blklen << 16;
+platform/mediatek/common/mmc/msdc.c:    if (host->card && mmc_card_mmc(host->card)) {
+platform/mediatek/common/mmc/msdc.c:    LTRACEF("+[MSDC%d] CMD(%d): ARG(0x%x), RAW(0x%x), BLK_NUM(0x%x) RSP(%d)\n", host->id,
+platform/mediatek/common/mmc/msdc.c:    addr_t base   = host->base;
+platform/mediatek/common/mmc/msdc.c:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+platform/mediatek/common/mmc/msdc.c:        addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+platform/mediatek/common/mmc/msdc.c:    host->intr_mask = wints;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    MSDC_WRITE32(MSDC_DMA_LEN, data->blks * host->blklen);
+platform/mediatek/common/mmc/msdc.c:    msdc_flush_membuf(data->buf, data->blks * host->blklen);
+platform/mediatek/common/mmc/msdc.c:    msdc_flush_membuf(data->buf, data->blks * host->blklen);
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    ASSERT(nblks <= host->max_phys_segs);
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    u32 blksz = host->blklen;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    u32 blksz = host->blklen;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:                host->id, status);
+platform/mediatek/common/mmc/msdc.c:                host->id, status, size, totalsz, MSDC_RXFIFOCNT(), dcrc);
+platform/mediatek/common/mmc/msdc.c:                    host->id, status, size, totalsz, MSDC_RXFIFOCNT());
+platform/mediatek/common/mmc/msdc.c:                host->id, status, size, totalsz, MSDC_RXFIFOCNT(), dcrc);
+platform/mediatek/common/mmc/msdc.c:                    host->id, MSDC_FIFO_THD, MSDC_RXFIFOCNT(), size, totalsz);
+platform/mediatek/common/mmc/msdc.c:                    host->id, MSDC_RXFIFOCNT(), size, totalsz);
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    if (host->id != 1)
+platform/mediatek/common/mmc/msdc.c:    if (!host->base_top)
+platform/mediatek/common/mmc/msdc.c:    struct msdc_priv_t *priv = host->priv;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/common/mmc/msdc.c:    if (hz >= host->f_max)
+platform/mediatek/common/mmc/msdc.c:        hz = host->f_max;
+platform/mediatek/common/mmc/msdc.c:    else if (hz < host->f_min)
+platform/mediatek/common/mmc/msdc.c:        hz = host->f_min;
+platform/mediatek/common/mmc/msdc.c:    msdc_config_clksrc(host, host->src_clk);
+platform/mediatek/common/mmc/msdc.c:        sclk = host->src_clk >> 1;
+platform/mediatek/common/mmc/msdc.c:        if (hz >= (host->src_clk >> 2)) {
+platform/mediatek/common/mmc/msdc.c:            sclk = host->src_clk >> 2; /* sclk = clk/div/2. 2: internal divisor */
+platform/mediatek/common/mmc/msdc.c:            div  = (host->src_clk + ((hz << 2) - 1)) / (hz << 2);
+platform/mediatek/common/mmc/msdc.c:            sclk = (host->src_clk >> 2) / div;
+platform/mediatek/common/mmc/msdc.c:    } else if (hz >= host->src_clk) {
+platform/mediatek/common/mmc/msdc.c:        sclk = host->src_clk;
+platform/mediatek/common/mmc/msdc.c:        if (hz >= (host->src_clk >> 1)) {
+platform/mediatek/common/mmc/msdc.c:            sclk = host->src_clk >> 1; /* sclk = clk / 2 */
+platform/mediatek/common/mmc/msdc.c:            div  = (host->src_clk + ((hz << 2) - 1)) / (hz << 2);
+platform/mediatek/common/mmc/msdc.c:            sclk = (host->src_clk >> 2) / div;
+platform/mediatek/common/mmc/msdc.c:    host->cur_bus_clk = sclk;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:            host->src_clk/1000000, host->cur_bus_clk/1000, mode, div, width);
+platform/mediatek/common/mmc/msdc.c:    host->time_read = 0;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    if (!host->base_top) {
+platform/mediatek/common/mmc/msdc.c:            if (host->cur_bus_clk <= 400000)
+platform/mediatek/common/mmc/msdc.c:                    host->id, (cmd->opcode & (~(SD_CMD_BIT | SD_CMD_APP_BIT))),
+platform/mediatek/common/mmc/msdc.c:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+platform/mediatek/common/mmc/msdc.c:                    host->id, (cmd->opcode & (~(SD_CMD_BIT | SD_CMD_APP_BIT))),
+platform/mediatek/common/mmc/msdc.c:        if (!host->base_top) {
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    if (!host->base_top) {
+platform/mediatek/common/mmc/msdc.c:            result = host->blk_read(host, dst, src, nblks);
+platform/mediatek/common/mmc/msdc.c:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+platform/mediatek/common/mmc/msdc.c:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+platform/mediatek/common/mmc/msdc.c:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+platform/mediatek/common/mmc/msdc.c:        if (!host->base_top) {
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    if (host->id == 0) {
+platform/mediatek/common/mmc/msdc.c:    if (!host->base_top) {
+platform/mediatek/common/mmc/msdc.c:            result = host->blk_write(host, dst, src, nblks);
+platform/mediatek/common/mmc/msdc.c:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+platform/mediatek/common/mmc/msdc.c:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+platform/mediatek/common/mmc/msdc.c:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+platform/mediatek/common/mmc/msdc.c:        if (!host->base_top) {
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->base;
+platform/mediatek/common/mmc/msdc.c:    addr_t base = host->id ? MSDC1_BASE : MSDC0_BASE; /* only support MSDC0, MSDC1 */
+platform/mediatek/common/mmc/msdc.c:    addr_t top_base = host->id ? MSDC1_TOP_BASE : MSDC0_TOP_BASE; /* only support MSDC0, MSDC1 */
+platform/mediatek/common/mmc/msdc.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/common/mmc/msdc.c:    host->base   = base;
+platform/mediatek/common/mmc/msdc.c:    host->base_top = top_base;
+platform/mediatek/common/mmc/msdc.c:    host->f_max  = MSDC_MAX_SCLK;
+platform/mediatek/common/mmc/msdc.c:    host->f_min  = MSDC_MIN_SCLK;
+platform/mediatek/common/mmc/msdc.c:    host->blklen = 0;
+platform/mediatek/common/mmc/msdc.c:    host->priv   = (void *)priv;
+platform/mediatek/common/mmc/msdc.c:    host->caps   = MMC_CAP_MULTIWRITE;
+platform/mediatek/common/mmc/msdc.c:        host->caps |= (MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED);
+platform/mediatek/common/mmc/msdc.c:        host->caps |= MMC_CAP_DDR;
+platform/mediatek/common/mmc/msdc.c:        host->caps |= MMC_CAP_SD_UHS1;
+platform/mediatek/common/mmc/msdc.c:        host->caps |= MMC_CAP_4_BIT_DATA;
+platform/mediatek/common/mmc/msdc.c:        host->caps |= MMC_CAP_8_BIT_DATA | MMC_CAP_4_BIT_DATA;
+platform/mediatek/common/mmc/msdc.c:        host->caps |= MMC_CAP_EMMC_HS200;
+platform/mediatek/common/mmc/msdc.c:        host->caps |= MMC_CAP_EMMC_HS400;
+platform/mediatek/common/mmc/msdc.c:    host->ocr_avail = MMC_VDD_27_36;  /* TODO: To be customized */
+platform/mediatek/common/mmc/msdc.c:    host->blk_read  = msdc_dma_bread;
+platform/mediatek/common/mmc/msdc.c:    host->blk_write = msdc_dma_bwrite;
+platform/mediatek/common/mmc/msdc.c:    host->blk_read  = msdc_pio_bread;
+platform/mediatek/common/mmc/msdc.c:    host->blk_write = msdc_pio_bwrite;
+platform/mediatek/common/mmc/msdc.c:    if (host->id == 1)
+platform/mediatek/common/mmc/msdc.c:    if (host->id)
+platform/mediatek/mt6789/mmc/msdc_io.c:    switch (host->id) {
+platform/mediatek/mt6789/mmc/msdc_io.c:	if (host->id != 0) {
+platform/mediatek/mt6789/mmc/msdc_io.c:		host->cur_pwr = level;
+platform/mediatek/mt6789/mmc/msdc_io.c:	struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6789/mmc/msdc_io.c:	switch (host->id) {
+platform/mediatek/mt6789/mmc/msdc_io.c:        msdc_host_power(host, 1, host->cur_pwr);
+platform/mediatek/mt6789/mmc/msdc_io.c:        msdc_host_power(host, 0, host->cur_pwr);
+platform/mediatek/mt6789/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, clksrc);
+platform/mediatek/mt6789/mmc/msdc_io.c:    /*if (host->id == 0) {
+platform/mediatek/mt6789/mmc/msdc_io.c:        host->pll_mux_clk = MSDC0_CLKSRC_DEFAULT;
+platform/mediatek/mt6789/mmc/msdc_io.c:        host->src_clk = msdc_get_hclk(host->id, MSDC0_CLKSRC_DEFAULT);
+platform/mediatek/mt6789/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt6789/mmc/msdc_io.c:        host->pll_mux_clk = MSDC1_CLKSRC_DEFAULT;
+platform/mediatek/mt6789/mmc/msdc_io.c:        host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
+platform/mediatek/mt6789/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6789/mmc/msdc_io.c:		MSDC_SET_FIELD((TOPCLK_BASE + 0x0140), 0x7 << 16, host->pll_mux_clk);
+platform/mediatek/mt6789/mmc/msdc_io.c:	} else if (host->id == 1) {
+platform/mediatek/mt6789/mmc/msdc_io.c:		MSDC_SET_FIELD((TOPCLK_BASE + 0x0140), 0x7 << 24, host->pll_mux_clk);
+platform/mediatek/mt6789/mmc/msdc_io.c:	} else if (host->id == 3) {
+platform/mediatek/mt6789/mmc/msdc_io.c:		MSDC_SET_FIELD((TOPCLK_BASE + 0x0150), 0x7 << 8, host->pll_mux_clk);
+platform/mediatek/mt6789/mmc/msdc_io.c:    host->pll_mux_clk = MSDC1_CLKSRC_DEFAULT;
+platform/mediatek/mt6789/mmc/msdc_io.c:    host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
+platform/mediatek/mt6789/mmc/msdc_io.c:		//INFRA_enable_clock(clk_id[host->id]);
+platform/mediatek/mt6789/mmc/msdc_io.c:		if (host->id == 0) {
+platform/mediatek/mt6789/mmc/msdc_io.c:		} else if (host->id == 1){
+platform/mediatek/mt6789/mmc/msdc_io.c:		//INFRA_disable_clock(clk_id[host->id]);
+platform/mediatek/mt6789/mmc/msdc_io.c:		if (host->id == 0) {
+platform/mediatek/mt6789/mmc/msdc_io.c:		} else if (host->id == 1){
+platform/mediatek/mt6789/mmc/msdc_io.c:    if (host->id == 0) {
+platform/mediatek/mt6789/mmc/msdc_io.c:    } else if (host->id == 1) {
+platform/mediatek/mt6789/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6789/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6789/mmc/msdc_io.c:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6789/mmc/msdc_io.c:    if (host->cur_pwr == VOL_1800)
+platform/mediatek/mt6789/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_1V8, 0);
+platform/mediatek/mt6789/mmc/msdc_io.c:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+platform/mediatek/mt6789/mmc/msdc_io.c:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+platform/mediatek/mt6789/mmc/msdc_io.c:    msdc_dump_padctl_by_id(host->id);
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_set_driving_by_id(host->id, msdc_cap)
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_set_ies_by_id(host->id, set_ies)
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_set_sr_by_id(host->id, clk, cmd, dat, rst, ds)
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_set_smt_by_id(host->id, set_smt)
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_set_tdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_set_rdsel_by_id(host->id, flag, value)
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_get_tdsel_by_id(host->id, value)
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_get_rdsel_by_id(host->id, value)
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_dump_padctl_by_id(host->id)
+platform/mediatek/mt6789/mmc/msdc_io.h:    msdc_pin_config_by_id(host->id, mode)
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->cur_bus_clk == 0) {
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->cur_bus_clk == 0) {
+build-k6789v1_64/lk.elf.debug.lst:        clk_ns  = 1000000000UL / host->cur_bus_clk;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:        host->max_phys_segs = 0xffff;
+build-k6789v1_64/lk.elf.debug.lst:        host->max_phys_segs = (UINT_MAX & ~511) >> MMC_BLOCK_BITS_SHFT;
+build-k6789v1_64/lk.elf.debug.lst:    cmd.arg     = host->card->rca << 16;
+build-k6789v1_64/lk.elf.debug.lst:    cmd.arg     = host->card->rca << 16;
+build-k6789v1_64/lk.elf.debug.lst:    cmd.arg     = host->card->rca << 16;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    msdc_dump_padctl_by_id(host->id);
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base   = host->base;
+build-k6789v1_64/lk.elf.debug.lst:             msdc_rsp[rsptyp] << 7 | host->blklen << 16;
+build-k6789v1_64/lk.elf.debug.lst:             msdc_rsp[rsptyp] << 7 | host->blklen << 16;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base   = host->base;
+build-k6789v1_64/lk.elf.debug.lst:             msdc_rsp[rsptyp] << 7 | host->blklen << 16;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->card && mmc_card_mmc(host->card)) {
+build-k6789v1_64/lk.elf.debug.lst:    LTRACEF("+[MSDC%d] CMD(%d): ARG(0x%x), RAW(0x%x), BLK_NUM(0x%x) RSP(%d)\n", host->id,
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base   = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base   = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:        addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (!host->base_top) {
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:            if (host->cur_bus_clk <= 400000)
+build-k6789v1_64/lk.elf.debug.lst:            if (host->cur_bus_clk <= 400000)
+build-k6789v1_64/lk.elf.debug.lst:                    host->id, (cmd->opcode & (~(SD_CMD_BIT | SD_CMD_APP_BIT))),
+build-k6789v1_64/lk.elf.debug.lst:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+build-k6789v1_64/lk.elf.debug.lst:        if (!host->base_top) {
+build-k6789v1_64/lk.elf.debug.lst:        if (!host->base_top) {
+build-k6789v1_64/lk.elf.debug.lst:    if (host->cur_bus_clk == 0) {
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->cur_bus_clk == 0) {
+build-k6789v1_64/lk.elf.debug.lst:        clk_ns  = 1000000000UL / host->cur_bus_clk;
+build-k6789v1_64/lk.elf.debug.lst:    MSDC_WRITE32(MSDC_DMA_LEN, data->blks * host->blklen);
+build-k6789v1_64/lk.elf.debug.lst:    msdc_flush_membuf(data->buf, data->blks * host->blklen);
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    host->intr_mask = wints;
+build-k6789v1_64/lk.elf.debug.lst:        addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    msdc_flush_membuf(data->buf, data->blks * host->blklen);
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id != 1)
+build-k6789v1_64/lk.elf.debug.lst:    if (!host->base_top)
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    else if (hz < host->f_min)
+build-k6789v1_64/lk.elf.debug.lst:    msdc_config_clksrc(host, host->src_clk);
+build-k6789v1_64/lk.elf.debug.lst:        sclk = host->src_clk >> 1;
+build-k6789v1_64/lk.elf.debug.lst:        sclk = host->src_clk >> 1;
+build-k6789v1_64/lk.elf.debug.lst:    host->cur_bus_clk = sclk;
+build-k6789v1_64/lk.elf.debug.lst:    } else if (hz >= host->src_clk) {
+build-k6789v1_64/lk.elf.debug.lst:        if (hz >= (host->src_clk >> 1)) {
+build-k6789v1_64/lk.elf.debug.lst:            div  = (host->src_clk + ((hz << 2) - 1)) / (hz << 2);
+build-k6789v1_64/lk.elf.debug.lst:            sclk = (host->src_clk >> 2) / div;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:        if (hz >= (host->src_clk >> 2)) {
+build-k6789v1_64/lk.elf.debug.lst:            div  = (host->src_clk + ((hz << 2) - 1)) / (hz << 2);
+build-k6789v1_64/lk.elf.debug.lst:            sclk = (host->src_clk >> 2) / div;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    host->time_read = 0;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (!host->base_top) {
+build-k6789v1_64/lk.elf.debug.lst:            result = host->blk_read(host, dst, src, nblks);
+build-k6789v1_64/lk.elf.debug.lst:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+build-k6789v1_64/lk.elf.debug.lst:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+build-k6789v1_64/lk.elf.debug.lst:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+build-k6789v1_64/lk.elf.debug.lst:        if (!host->base_top) {
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id == 0) {
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id == 0) {
+build-k6789v1_64/lk.elf.debug.lst:    if (!host->base_top) {
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id == 0) {
+build-k6789v1_64/lk.elf.debug.lst:    if (!host->base_top) {
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:            result = host->blk_write(host, dst, src, nblks);
+build-k6789v1_64/lk.elf.debug.lst:            result = host->blk_write(host, dst, src, nblks);
+build-k6789v1_64/lk.elf.debug.lst:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+build-k6789v1_64/lk.elf.debug.lst:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+build-k6789v1_64/lk.elf.debug.lst:                    host->id, times, (result == MMC_ERR_NONE) ? "PASS" : "FAIL",
+build-k6789v1_64/lk.elf.debug.lst:        if (!host->base_top) {
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->id ? MSDC1_BASE : MSDC0_BASE; /* only support MSDC0, MSDC1 */
+build-k6789v1_64/lk.elf.debug.lst:    addr_t top_base = host->id ? MSDC1_TOP_BASE : MSDC0_TOP_BASE; /* only support MSDC0, MSDC1 */
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->id ? MSDC1_BASE : MSDC0_BASE; /* only support MSDC0, MSDC1 */
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+build-k6789v1_64/lk.elf.debug.lst:    addr_t top_base = host->id ? MSDC1_TOP_BASE : MSDC0_TOP_BASE; /* only support MSDC0, MSDC1 */
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+build-k6789v1_64/lk.elf.debug.lst:    host->base   = base;
+build-k6789v1_64/lk.elf.debug.lst:    host->base_top = top_base;
+build-k6789v1_64/lk.elf.debug.lst:    host->f_max  = MSDC_MAX_SCLK;
+build-k6789v1_64/lk.elf.debug.lst:    host->f_min  = MSDC_MIN_SCLK;
+build-k6789v1_64/lk.elf.debug.lst:    host->blklen = 0;
+build-k6789v1_64/lk.elf.debug.lst:    host->priv   = (void *)priv;
+build-k6789v1_64/lk.elf.debug.lst:    host->f_max  = MSDC_MAX_SCLK;
+build-k6789v1_64/lk.elf.debug.lst:    host->caps   = MMC_CAP_MULTIWRITE;
+build-k6789v1_64/lk.elf.debug.lst:        host->caps |= (MMC_CAP_MMC_HIGHSPEED | MMC_CAP_SD_HIGHSPEED);
+build-k6789v1_64/lk.elf.debug.lst:        host->caps |= MMC_CAP_DDR;
+build-k6789v1_64/lk.elf.debug.lst:        host->caps |= MMC_CAP_SD_UHS1;
+build-k6789v1_64/lk.elf.debug.lst:        host->caps |= MMC_CAP_EMMC_HS200;
+build-k6789v1_64/lk.elf.debug.lst:        host->caps |= MMC_CAP_EMMC_HS400;
+build-k6789v1_64/lk.elf.debug.lst:    host->ocr_avail = MMC_VDD_27_36;  /* TODO: To be customized */
+build-k6789v1_64/lk.elf.debug.lst:    host->ocr_avail = MMC_VDD_27_36;  /* TODO: To be customized */
+build-k6789v1_64/lk.elf.debug.lst:    host->blk_read  = msdc_dma_bread;
+build-k6789v1_64/lk.elf.debug.lst:    host->blk_write = msdc_dma_bwrite;
+build-k6789v1_64/lk.elf.debug.lst:    host->blk_read  = msdc_dma_bread;
+build-k6789v1_64/lk.elf.debug.lst:    host->blk_write = msdc_dma_bwrite;
+build-k6789v1_64/lk.elf.debug.lst:    host->blk_read  = msdc_dma_bread;
+build-k6789v1_64/lk.elf.debug.lst:    host->blk_read  = msdc_pio_bread;
+build-k6789v1_64/lk.elf.debug.lst:    host->blk_write = msdc_pio_bwrite;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id == 1)
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->cur_bus_clk == 0) {
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->cur_bus_clk == 0) {
+build-k6789v1_64/lk.elf.debug.lst:        clk_ns  = 1000000000UL / host->cur_bus_clk;
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id)
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id)
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    MSDC_WRITE32(MSDC_INT, g_int_status & host->intr_mask);
+build-k6789v1_64/lk.elf.debug.lst:    host->intr_mask = 0;
+build-k6789v1_64/lk.elf.debug.lst:    ASSERT(nblks <= host->max_phys_segs);
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_priv_t *priv = (struct msdc_priv_t *)host->priv;
+build-k6789v1_64/lk.elf.debug.lst:    ASSERT(nblks <= host->max_phys_segs);
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:                __func__, host->id, status);
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:        host->blklen = 64;
+build-k6789v1_64/lk.elf.debug.lst:        host->blklen = 64;
+build-k6789v1_64/lk.elf.debug.lst:            if (err && (host->cur_bus_clk > (host->f_max >> 4)))
+build-k6789v1_64/lk.elf.debug.lst:                mmc_set_clock(host, card->state, host->cur_bus_clk >> 1);
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    else if (hz < host->f_min)
+build-k6789v1_64/lk.elf.debug.lst:            err = host->blk_read(host, (uchar *)dst, src, blkcnt);
+build-k6789v1_64/lk.elf.debug.lst:            if (err && (host->cur_bus_clk > (host->f_max >> 4)))
+build-k6789v1_64/lk.elf.debug.lst:                mmc_set_clock(host, card->state, host->cur_bus_clk >> 1);
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    else if (hz < host->f_min)
+build-k6789v1_64/lk.elf.debug.lst:            err = host->blk_write(host, dst, (uchar *)src, blkcnt);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(CRITICAL, "[SD%d] Fail in GO_IDLE_STATE cmd\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id)
+build-k6789v1_64/lk.elf.debug.lst:        mmc_send_if_cond(host, host->ocr_avail);
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id) {
+build-k6789v1_64/lk.elf.debug.lst:    ocr &= host->ocr_avail;
+build-k6789v1_64/lk.elf.debug.lst:    host->card = card;
+build-k6789v1_64/lk.elf.debug.lst:    ocr &= host->ocr_avail;
+build-k6789v1_64/lk.elf.debug.lst:    ocr = host->ocr = mmc_select_voltage(host, ocr);
+build-k6789v1_64/lk.elf.debug.lst:    if (!host->ocr) {
+build-k6789v1_64/lk.elf.debug.lst:        if (host->caps & MMC_CAP_SD_UHS1)
+build-k6789v1_64/lk.elf.debug.lst:        if (host->caps & MMC_CAP_SD_UHS1)
+build-k6789v1_64/lk.elf.debug.lst:    u32 ocr = host->ocr;
+build-k6789v1_64/lk.elf.debug.lst:            if (host->caps & MMC_CAP_SD_UHS1)
+build-k6789v1_64/lk.elf.debug.lst:            if (host->caps & MMC_CAP_SD_UHS1)
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(CRITICAL, "[SD%d] Fail in SEND_CID cmd\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(CRITICAL, "[SD%d] Fail in SEND_RCA cmd\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:                dprintf(CRITICAL, "[SD%d] Fail in SWITCH_VOLT cmd\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(CRITICAL, "[SD%d] Fail in SEND_CSD cmd\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(CRITICAL, "[SD%d] Fail in select card cmd\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:            dprintf(CRITICAL, "[SD%d] Fail in SEND_EXT_CSD cmd\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    host->blklen = 8;
+build-k6789v1_64/lk.elf.debug.lst:            dprintf(CRITICAL, "[SD%d] Fail in SEND_SCR cmd\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        if (host->caps & MMC_CAP_EMMC_HS200 && host->caps & MMC_CAP_EMMC_HS400) {
+build-k6789v1_64/lk.elf.debug.lst:    dprintf(INFO, "[SD%d] SCR: %x %x (raw)\n", host->id,
+build-k6789v1_64/lk.elf.debug.lst:    dprintf(INFO, "[SD%d] SCR: %x %x (ntohl)\n", host->id, card->raw_scr[0], card->raw_scr[1]);
+build-k6789v1_64/lk.elf.debug.lst:    dprintf(INFO, "[SD%d] SCR: %x %x (ntohl)\n", host->id, card->raw_scr[0], card->raw_scr[1]);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: 800mA current limit\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:                if (s18a && (host->caps & MMC_CAP_SD_UHS1)) {
+build-k6789v1_64/lk.elf.debug.lst:                    freq = MIN(host->f_max, card->sw_caps.hs_max_dtr);
+build-k6789v1_64/lk.elf.debug.lst:        if ((card->ext_csd.hs_max_dtr != 0) && (host->caps & MMC_CAP_MMC_HIGHSPEED)) {
+build-k6789v1_64/lk.elf.debug.lst:            mmc_set_clock(host, 0, host->f_min);
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:                dprintf(ALWAYS, "[SD%d] Switched to High-Speed mode!\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    else if (hz < host->f_min)
+build-k6789v1_64/lk.elf.debug.lst:        host->blklen = MMC_BLOCK_SIZE;
+build-k6789v1_64/lk.elf.debug.lst:    dprintf(ALWAYS, "[SD%d] %s Initialized\n", host->id,
+build-k6789v1_64/lk.elf.debug.lst:    host->card = card;
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    else if (hz < host->f_min)
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    else if (hz < host->f_min)
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: Default/SDR12\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: HS/SDR25\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: DDR50\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: SDR50\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: SDR104\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: Type-B Drv\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: Type-A Drv\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: Type-C Drv\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: Type-D Drv\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: 200mA current limit\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: 400mA current limit\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Support: 600mA current limit\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:                        if (card->sw_caps.ddr && (host->caps & MMC_CAP_DDR))
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Switch to UHS-1 %s drv!\n", host->id, type[val]);
+build-k6789v1_64/lk.elf.debug.lst:                if (host->caps & MMC_CAP_SD_HIGHSPEED) {
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(INFO, "[SD%d] Switch to HS mode!\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:        dprintf(CRITICAL, "[SD%d] HS mode not supported!\n", host->id);
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    else if (hz < host->f_min)
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    if (hz >= host->f_max)
+build-k6789v1_64/lk.elf.debug.lst:    else if (hz < host->f_min)
+build-k6789v1_64/lk.elf.debug.lst:    host->id = id;
+build-k6789v1_64/lk.elf.debug.lst:    host->cur_pwr = VOL_3000;
+build-k6789v1_64/lk.elf.debug.lst:    host->cur_pwr = VOL_3000;
+build-k6789v1_64/lk.elf.debug.lst:    mutex_init(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    host->id = MMC_HOST_ID;
+build-k6789v1_64/lk.elf.debug.lst:    host->id = MMC_HOST_ID;
+build-k6789v1_64/lk.elf.debug.lst:    host->id = MMC_HOST_ID;
+build-k6789v1_64/lk.elf.debug.lst:    host->cur_pwr = VOL_1800;
+build-k6789v1_64/lk.elf.debug.lst:    mutex_init(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:            dprintf(CRITICAL, "[SD%d] Fail to send status %d\n", host->id, err);
+build-k6789v1_64/lk.elf.debug.lst:            dprintf(CRITICAL, "[SD%d] switch error. arg(0x%x)\n", host->id, cmd.arg);
+build-k6789v1_64/lk.elf.debug.lst:        host->curr_part = value & 0x7;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:        host->blklen = 512;
+build-k6789v1_64/lk.elf.debug.lst:    u32 caps = card->host->caps;
+build-k6789v1_64/lk.elf.debug.lst:    u32 caps = card->host->caps;
+build-k6789v1_64/lk.elf.debug.lst:        if ((width == HOST_BUS_WIDTH_4) && (host->caps & MMC_CAP_4_BIT_DATA)) {
+build-k6789v1_64/lk.elf.debug.lst:            if (host->caps & MMC_CAP_4_BIT_DATA)
+build-k6789v1_64/lk.elf.debug.lst:            if (host->caps & MMC_CAP_8_BIT_DATA)
+build-k6789v1_64/lk.elf.debug.lst:    u16 data_len = host->caps &  MMC_CAP_8_BIT_DATA ? 128 : 64;
+build-k6789v1_64/lk.elf.debug.lst:    addr_t base = host->base;
+build-k6789v1_64/lk.elf.debug.lst:    host->blklen = data_len;
+build-k6789v1_64/lk.elf.debug.lst:    mutex_acquire(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_release(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_release(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_acquire(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_release(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_release(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    u32 maxblks = host->max_phys_segs;
+build-k6789v1_64/lk.elf.debug.lst:    mutex_acquire(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_release(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_release(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    u32 maxblks = host->max_phys_segs;
+build-k6789v1_64/lk.elf.debug.lst:    mutex_acquire(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_release(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_release(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_acquire(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    mutex_release(&host->lock);
+build-k6789v1_64/lk.elf.debug.lst:    if (host->curr_part == dev->part_id)
+build-k6789v1_64/lk.elf.debug.lst:    if (host->curr_part != EXT_CSD_PART_CFG_RPMB_PART) {
+build-k6789v1_64/lk.elf.debug.lst:    if (host->curr_part != EXT_CSD_PART_CFG_RPMB_PART) {
+build-k6789v1_64/lk.elf.debug.lst:    u32 blksz = host->blklen;
+build-k6789v1_64/lk.elf.debug.lst:    maxblks = host->max_phys_segs;
+build-k6789v1_64/lk.elf.debug.lst:	if (host->id != 0) {
+build-k6789v1_64/lk.elf.debug.lst:		host->cur_pwr = level;
+build-k6789v1_64/lk.elf.debug.lst:	struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+build-k6789v1_64/lk.elf.debug.lst:    if (host->cur_pwr == VOL_1800)
+build-k6789v1_64/lk.elf.debug.lst:        msdc_set_tdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+build-k6789v1_64/lk.elf.debug.lst:    if (host->cur_pwr == VOL_1800)
+build-k6789v1_64/lk.elf.debug.lst:	switch (host->id) {
+build-k6789v1_64/lk.elf.debug.lst:        msdc_host_power(host, 1, host->cur_pwr);
+build-k6789v1_64/lk.elf.debug.lst:    switch (host->id) {
+build-k6789v1_64/lk.elf.debug.lst:        msdc_host_power(host, 0, host->cur_pwr);
+build-k6789v1_64/lk.elf.debug.lst:    switch (host->id) {
+build-k6789v1_64/lk.elf.debug.lst:		if (host->id == 0) {
+build-k6789v1_64/lk.elf.debug.lst:		} else if (host->id == 1){
+build-k6789v1_64/lk.elf.debug.lst:		if (host->id == 0) {
+build-k6789v1_64/lk.elf.debug.lst:		} else if (host->id == 1){
+build-k6789v1_64/lk.elf.debug.lst:    host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
+build-k6789v1_64/lk.elf.debug.lst:    host->pll_mux_clk = MSDC1_CLKSRC_DEFAULT;
+build-k6789v1_64/lk.elf.debug.lst:    host->src_clk = msdc_get_hclk(host->id, MSDC1_CLKSRC_DEFAULT);
+build-k6789v1_64/lk.elf.debug.lst:        msdc_set_rdsel_by_id(host->id, MSDC_TDRDSEL_3V, 0);
+build-k6789v1_64/lk.elf.debug.lst:    struct msdc_cust msdc_cap = get_msdc_capability(host->id);
+build-k6789v1_64/lk.elf.debug.lst:    if (host->id == 0) {
+build-k6789v1_64/lk.elf.debug.lst:    msdc_dump_padctl_by_id(host->id);

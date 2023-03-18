@@ -29,12 +29,11 @@
 
 #include <debug.h>
 #include <fastboot_usb.h>
+#include <lib/bio.h>
 #include <kernel/event.h>
 #include <kernel/thread.h>
-#include <lib/bio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <verified_boot_common.h>
 #include "bulk_process.h"
 #include "flash_commands.h"
 #include "sparse_format.h"
@@ -42,11 +41,13 @@
 #include "transfer.h"
 
 #if defined MTK_ULTRA_FLASH
+
 //#define TIME_STAMP gpt4_tick2time_ms(gpt4_get_current_tick())
-#define CACHE_PADDING_SIZE   STORAGE_BLOCK_SIZE
-#define SYSOB_CACHE_PAGE     (2 * 1024 * 1024U)
-#define SYSOB_BIG_CACHE      (2 * 1024 * 1024U)
-#define SIGNAL_RESCHEDULE    (0) // true; active. 0 passive.
+
+#define CACHE_PADDING_SIZE STORAGE_BLOCK_SIZE
+#define SYSOB_CACHE_PAGE (2 * 1024 * 1024U)
+#define SYSOB_BIG_CACHE (2 * 1024 * 1024U)
+#define SIGNAL_RESCHEDULE 0 // true; active. 0 passive.
 
 /***********************************************************************************
  *                 DOWNLOAD ENGINE

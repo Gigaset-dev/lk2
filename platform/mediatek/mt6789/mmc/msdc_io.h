@@ -361,6 +361,47 @@ enum {
 /*******************************************************************************
  * Power Definition
  ******************************************************************************/
+#define MT6358_PMIC_REG_BASE (0x0)
+#define MT6358_VEMC_ANA_CON0                  ((unsigned int)(MT6358_PMIC_REG_BASE+0x1e38))
+#define MT6358_LDO_VEMC_CON0                  ((unsigned int)(MT6358_PMIC_REG_BASE+0x1b1c))
+#define MT6358_VMC_ANA_CON0                   ((unsigned int)(MT6358_PMIC_REG_BASE+0x1e4c))
+#define MT6358_LDO_VMC_CON0                   ((unsigned int)(MT6358_PMIC_REG_BASE+0x1cc4))
+#define MT6358_VMCH_ANA_CON0                  ((unsigned int)(MT6358_PMIC_REG_BASE+0x1e48))
+#define MT6358_LDO_VMCH_CON0                  ((unsigned int)(MT6358_PMIC_REG_BASE+0x1cd8))
+
+#define PMIC_RG_VEMC_VOCAL_ADDR                              MT6358_VEMC_ANA_CON0
+#define PMIC_RG_VEMC_VOCAL_MASK                              0xF
+#define PMIC_RG_VEMC_VOCAL_SHIFT                             0
+
+#define PMIC_RG_VEMC_VOSEL_ADDR                              MT6358_VEMC_ANA_CON0
+#define PMIC_RG_VEMC_VOSEL_MASK                              0x7
+#define PMIC_RG_VEMC_VOSEL_SHIFT                             8
+
+#define PMIC_RG_LDO_VEMC_EN_ADDR                             MT6358_LDO_VEMC_CON0
+#define PMIC_RG_LDO_VEMC_EN_MASK                             0x1
+#define PMIC_RG_LDO_VEMC_EN_SHIFT                            0
+
+#define PMIC_RG_VMC_VOSEL_ADDR                               MT6358_VMC_ANA_CON0
+#define PMIC_RG_VMC_VOSEL_MASK                               0xF
+#define PMIC_RG_VMC_VOSEL_SHIFT                              8
+
+#define PMIC_RG_LDO_VMC_EN_ADDR                              MT6358_LDO_VMC_CON0
+#define PMIC_RG_LDO_VMC_EN_MASK                              0x1
+#define PMIC_RG_LDO_VMC_EN_SHIFT                             0
+
+#define PMIC_RG_VMCH_VOSEL_ADDR                              MT6358_VMCH_ANA_CON0
+#define PMIC_RG_VMCH_VOSEL_MASK                              0x7
+#define PMIC_RG_VMCH_VOSEL_SHIFT                             8
+
+#define PMIC_RG_VMCH_VOCAL_ADDR                              MT6358_VMCH_ANA_CON0
+#define PMIC_RG_VMCH_VOCAL_MASK                              0xF
+#define PMIC_RG_VMCH_VOCAL_SHIFT                             0
+
+#define PMIC_RG_LDO_VMCH_EN_ADDR                             MT6358_LDO_VMCH_CON0
+#define PMIC_RG_LDO_VMCH_EN_MASK                             0x1
+#define PMIC_RG_LDO_VMCH_EN_SHIFT                            0
+
+
 #define REG_VEMC_VOSEL_CAL      PMIC_RG_VEMC_VOCAL_ADDR
 #define MASK_VEMC_VOSEL_CAL     PMIC_RG_VEMC_VOCAL_MASK
 #define SHIFT_VEMC_VOSEL_CAL    PMIC_RG_VEMC_VOCAL_SHIFT
@@ -377,35 +418,40 @@ enum {
 #define SHIFT_VEMC_EN           PMIC_RG_LDO_VEMC_EN_SHIFT
 #define FIELD_VEMC_EN           (MASK_VEMC_EN << SHIFT_VEMC_EN)
 
-#define REG_VMC_VOSEL           0x9
-#define MASK_VMC_VOSEL          0xF0
-#define SHIFT_VMC_VOSEL         4
+#define REG_VMC_VOSEL           PMIC_RG_VMC_VOSEL_ADDR
+#define MASK_VMC_VOSEL          PMIC_RG_VMC_VOSEL_MASK
+#define SHIFT_VMC_VOSEL         PMIC_RG_VMC_VOSEL_SHIFT
 
-#define REG_VMC_VOSEL_CAL       0x9
+
+/*#define REG_VMC_VOSEL_CAL       0x9
 #define MASK_VMC_VOSEL_CAL      0x0F
-#define SHIFT_VMC_VOSEL_CAL     0
+#define SHIFT_VMC_VOSEL_CAL     0)*/
 
-#define REG_VMC_EN              0x5
-#define MASK_VMC_EN             0x40
-#define SHIFT_VMC_EN            6
+#define REG_VMC_EN              PMIC_RG_LDO_VMC_EN_ADDR
+#define MASK_VMC_EN             PMIC_RG_LDO_VMC_EN_MASK
+#define SHIFT_VMC_EN            PMIC_RG_LDO_VMC_EN_SHIFT
 
-#define MASK_LDO3_EN            0x04
-#define SHIFT_LDO3_EN           2
 
-#define REG_VMCH_VOSEL          0xF
-#define MASK_VMCH_VOSEL         0x70
-#define SHIFT_VMCH_VOSEL        4
+/*#define MASK_LDO3_EN            0x04
+#define SHIFT_LDO3_EN           2 */
 
-#define REG_VMCH_VOSEL_CAL      0xF
-#define MASK_VMCH_VOSEL_CAL     0x0F
-#define SHIFT_VMCH_VOSEL_CAL    0
+#define REG_VMCH_VOSEL          PMIC_RG_VMCH_VOSEL_ADDR
+#define MASK_VMCH_VOSEL         PMIC_RG_VMCH_VOSEL_MASK
+#define SHIFT_VMCH_VOSEL        PMIC_RG_VMCH_VOSEL_SHIFT
 
-#define REG_VMCH_EN             0xB
-#define MASK_VMCH_EN            0x40
-#define SHIFT_VMCH_EN           6
 
-#define MASK_LDO5_EN            0x04
-#define SHIFT_LDO5_EN           2
+#define REG_VMCH_VOSEL_CAL      PMIC_RG_VMCH_VOCAL_ADDR
+#define MASK_VMCH_VOSEL_CAL     PMIC_RG_VMCH_VOCAL_MASK
+#define SHIFT_VMCH_VOSEL_CAL    PMIC_RG_VMCH_VOCAL_SHIFT
+
+
+#define REG_VMCH_EN             PMIC_RG_LDO_VMCH_EN_ADDR
+#define MASK_VMCH_EN            PMIC_RG_LDO_VMCH_EN_MASK
+#define SHIFT_VMCH_EN           PMIC_RG_LDO_VMCH_EN_SHIFT
+
+
+//#define MASK_LDO5_EN            0x04
+//#define SHIFT_LDO5_EN           2*/
 
 #define VEMC_VOSEL_CAL_mV(cal)  ((cal >= 0) ? ((cal)/10) : 0)
 #define VEMC_VOSEL_2V9          (2)
@@ -437,3 +483,17 @@ enum {
 #define CRCSTSENSEL_HS_DEFAULT          1
 #define RESPSTENSEL_HS_DEFAULT          1
 #define CRCSTSENSEL_FPGA_DEFAULT        0
+
+#define WACS_FSM_IDLE               (0x00)
+
+/*set cg bit*/
+#define MSDC0_CLOCK_GATE_REG    (INFRACFG_AO_BASE + 0x088)
+#define MSDC1_CLOCK_GATE_REG    (INFRACFG_AO_BASE + 0x088)
+/*clr cg bit*/
+#define MSDC0_CLOCK_UNGATE_REG  (INFRACFG_AO_BASE + 0x08c)
+#define MSDC1_CLOCK_UNGATE_REG  (INFRACFG_AO_BASE + 0x08c)
+
+#define MSDC0_CLOCK_CG          (1 << 2)
+#define MSDC0_CLOCK_SRC_CG      (1 << 6)
+#define MSDC1_CLOCK_CG          (1 << 4)
+#define MSDC1_CLOCK_SRC_CG      (1 << 16)
