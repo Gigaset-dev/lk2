@@ -196,7 +196,7 @@ static void androidboot_cmdline(void)
 
 int boot_linux_fdt(void *kernel, unsigned int *tags,
                 unsigned int machtype, void *ramdisk,
-                unsigned int ramdisk_sz)
+                unsigned int ramdisk_sz, void *droidboot_kernel, off_t droidboot_kernel_size)
 {
     void *fdt = (void *)LK_DT_BASE;
     int i;
@@ -431,9 +431,15 @@ kernel_map:
 kernel_relocate:
     if (g_is_64bit_kernel) {
         LTRACEF("decompress kernel image...\n");
-        if (decompress_kernel((unsigned char *)(kernel_load_addr),
-                kernel_va, (int)zimage_size, (int)kernel_max_size))
-            panic("decompress kernel image fail!!!\n");
+        if(droidboot_kernel_size==0){
+            if (decompress_kernel((unsigned char *)(kernel_load_addr),
+                    kernel_va, (int)zimage_size, (int)kernel_max_size))
+                panic("decompress kernel image fail!!!\n");
+        } else {
+             if (decompress_kernel(droidboot_kernel,
+                    kernel_va, (int)droidboot_kernel_size, (int)kernel_max_size))
+                panic("decompress kernel image fail!!!\n");
+        }
     } else
         memcpy(kernel_va, (void *)kernel_load_addr, zimage_size);
 
@@ -644,7 +650,124 @@ jump:
                    (unsigned int *)(uintptr_t)tags_target_addr,
                    6779,//board_machtype(),
                    (void *)(uintptr_t)ramdisk_target_addr,
-                   ramdisk_sz);
+                   ramdisk_sz, NULL, 0);
+
+    while (1)
+        ;
+
+    return 0;
+}
+
+int boot_linux_from_ram(void *droidboot_kernel, off_t droidboot_kernel_size, off_t droidboot_ramdisk_size)
+{
+    int ret = 0;
+    status_t err = NO_ERROR;
+    uint32_t kernel_target_addr = 0;
+    uint32_t ramdisk_target_addr = 0;
+    uint32_t tags_target_addr = 0;
+    vaddr_t ramdisk_addr = 0;
+    uint32_t ramdisk_sz = 0;
+    u64 ramdisk_addr_mb = 0;
+    void *ramdisk_va = (void *)LK_RAMDISK_BASE;
+    uint32_t ramdisk_map_sz = 0;
+
+    /* load and verify BOOTIMG_TYPE_RECOVERY,
+     * only if it's RECOVERY_BOOT on non-AB load
+     */
+    bool is_ab_enabled = (strlen(get_suffix()) == 0) ? false : true;
+
+    if ((get_boot_mode() == RECOVERY_BOOT) && (!is_ab_enabled)) {
+        PROFILING_START("load recovery image");
+        ret = load_vfy_boot(BOOTIMG_TYPE_RECOVERY);
+        ASSERT(ret >= 0);
+        PROFILING_END();
+    } else {
+        PROFILING_START("load boot image");
+        ret = load_vfy_boot(BOOTIMG_TYPE_BOOT);
+        ASSERT(ret >= 0);
+        PROFILING_END();
+    }
+
+    /* append build time cmdline from boot/vendor_boot hdr */
+    kcmdline_append((const char *)get_bootimg_cmdline());
+    if (get_header_version() >=  BOOT_HEADER_VERSION_THREE)
+        kcmdline_append((const char *)get_vendor_bootimg_cmdline());
+
+    kernel_target_addr = get_kernel_target_addr();
+    ramdisk_target_addr = get_ramdisk_target_addr();
+    ramdisk_addr = get_ramdisk_addr();
+    ramdisk_sz = get_ramdisk_real_sz();
+    tags_target_addr = get_tags_addr();
+
+    ASSERT(kernel_target_addr != 0);
+    ASSERT(ramdisk_target_addr != 0);
+    ASSERT(ramdisk_addr != 0);
+
+    /* for system as root */
+    if (!ramdisk_sz)
+        goto jump;
+
+ramdisk_map:
+    if (get_header_version() >= BOOT_HEADER_VERSION_FOUR)
+        ramdisk_map_sz += BOOTCONFIG_LEN;
+
+    ramdisk_map_sz += ramdisk_sz;
+
+    if (ramdisk_map_sz > LK_RAMDISK_SIZE) {
+        LTRACEF("ramdisk_map_sz (0x%x) cannot overrun LK_RAMDISK_SIZE (0x%x)\n",
+            ramdisk_map_sz, LK_RAMDISK_SIZE);
+        ASSERT(0);
+    }
+
+    /* reserve ramdisk target buffer with mblock */
+    ramdisk_addr_mb = mblock_alloc(ROUNDUP(ramdisk_map_sz, PAGE_SIZE),
+        PAGE_SIZE, MBLOCK_NO_LIMIT, ramdisk_target_addr, 0, "mb_ramdisk");
+
+    if (ramdisk_addr_mb != (u64)LK_RAMDISK_BASE_PHY) {
+        LTRACEF("ramdisk_addr (0x%x) is not taken from mb (0x%llx)\n",
+            LK_RAMDISK_BASE_PHY, ramdisk_addr_mb);
+        ASSERT(0);
+    }
+
+    if (!vaddr_to_paddr(ramdisk_va)) {
+        /* If the va is not mapped,
+         * allocate desired virtual space, and MMU mapping with it
+         */
+        err = vmm_alloc_physical(vmm_get_kernel_aspace(),
+                "vm_ramdisk", ROUNDUP(ramdisk_map_sz, PAGE_SIZE),
+                &ramdisk_va, PAGE_SIZE_SHIFT,
+                (paddr_t)ramdisk_target_addr,
+                VMM_FLAG_VALLOC_SPECIFIC,
+                ARCH_MMU_FLAG_CACHED);
+    }
+
+    if (err != NO_ERROR || ramdisk_va != (void *)LK_RAMDISK_BASE) {
+        panic("err=%d, vm_ramdisk (0x%p) expected (0x%p)\n",
+            err, ramdisk_va, (void *)LK_RAMDISK_BASE);
+    }
+
+ramdisk_relocate:
+    /* relocate rootfs:
+     * After boot image v3, load the generic ramdisk into memory
+     * immediately following the vendor ramdisk.
+     * Otherwise, only load the generic ramdisk (from boot image).
+     */
+ /*   if (get_header_version() >=  BOOT_HEADER_VERSION_THREE) {
+        memcpy((void *)ramdisk_va,
+               (void *)get_vendor_ramdisk_addr(),
+               (size_t)get_vendor_ramdisk_real_sz());
+        ramdisk_va += get_vendor_ramdisk_real_sz();
+    }*/
+    memcpy((void *)ramdisk_va,
+           (void *)droidboot_kernel+droidboot_kernel_size,
+           (size_t)droidboot_ramdisk_size);
+
+jump:
+    boot_linux_fdt((void *)(uintptr_t)kernel_target_addr,
+                   (unsigned int *)(uintptr_t)tags_target_addr,
+                   6779,//board_machtype(),
+                   (void *)(uintptr_t)ramdisk_target_addr,
+                   droidboot_ramdisk_size, droidboot_kernel, droidboot_kernel_size);
 
     while (1)
         ;
@@ -730,6 +853,7 @@ void mt_boot_entry(const struct app_descriptor *app, void *args)
     /* Wait for boot linux event */
     wait_for_boot_linux();
     /* Will not return */
+    mtk_wdt_config(0);
     droidboot_init();
     droidboot_show_dualboot_menu();
     boot_linux_from_storage();
